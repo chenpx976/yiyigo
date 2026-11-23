@@ -16,10 +16,11 @@ export function createLivingSurface(
   connections: Map<string, ConnectionState>,
   surfaces: Map<string, SurfaceTransition>,
   envelopePrototype = false,
+  focus = -1,
 ) {
   const { primitives, bins } = surfaceModel(
     game,
-    -1,
+    focus,
     previous,
     animate,
     time,
@@ -40,19 +41,6 @@ export function createSurfaceFromModel(n:number,model:ReturnType<typeof surfaceM
     ranges: number[] = [],
     indices: number[] = [],
     normals: number[] = [];
-  // Retain node adjacency for diagnostics. Rendering below uses whole-edge
-  // records with two endpoint references rather than one half per neighbour.
-  primitives.forEach((node,index) => {
-    if (node.data[4] !== 0) return;
-    const [x,y] = node.data;
-    const adjacent = primitives.flatMap((link,k) => {
-      const [ax,ay,bx,by,type,color] = link.data;
-      return type>0 && color===node.data[5] && ((x===ax&&y===ay)||(x===bx&&y===by)) ? [k*5] : [];
-    });
-    values[index*20+9]=values.length/4;
-    values[index*20+10]=adjacent.length;
-    for (const address of adjacent) values.push(address,0,0,0);
-  });
   // Link metadata contains both node record addresses. The shader evaluates
   // each whole link once and samples endpoint lifecycle from these references.
   for (let index=0;index<primitives.length;index++) {
@@ -105,6 +93,21 @@ export function createSurfaceFromModel(n:number,model:ReturnType<typeof surfaceM
     THREE.FloatType,
   );
   texture.needsUpdate = true;
+  // Separate side table leaves the existing five-vec4 stone/edge records intact.
+  // Header index = edge record address / 5. Header.xy = start texel, count.
+  // Each appended crossing texel is [relative t, from amount, to amount, start].
+  const crossingValues = new Array<number>(primitives.length * 4).fill(0);
+  primitives.forEach((primitive, index) => {
+    const crossings = primitive.crossings ?? [];
+    crossingValues[index * 4] = crossingValues.length / 4;
+    crossingValues[index * 4 + 1] = crossings.length;
+    for (const c of crossings) crossingValues.push(c.t, c.from, c.to, c.start);
+  });
+  const crossingHeight = Math.max(1, Math.ceil(crossingValues.length / 4096));
+  const crossingData = new Float32Array(crossingHeight * 4096);
+  crossingData.set(crossingValues);
+  const crossingTexture = new THREE.DataTexture(crossingData, 1024, crossingHeight, THREE.RGBAFormat, THREE.FloatType);
+  crossingTexture.needsUpdate = true;
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute(
     "position",
@@ -116,6 +119,7 @@ export function createSurfaceFromModel(n:number,model:ReturnType<typeof surfaceM
   geometry.setIndex(indices);
   const uniforms = {
     uData: { value: texture },
+    uCrossings: { value: crossingTexture },
     // The former prototype switch is accepted only for caller compatibility.
     // All rendering now uses the single whole-edge field.
     uTime: { value: time },
@@ -134,6 +138,7 @@ export function createSurfaceFromModel(n:number,model:ReturnType<typeof surfaceM
     dispose: () => {
       geometry.dispose();
       texture.dispose();
+      crossingTexture.dispose();
       implicit.material.dispose();
       implicit.depth.dispose();
     },

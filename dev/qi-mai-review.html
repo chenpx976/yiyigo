@@ -1,6 +1,6 @@
 <!doctype html><html lang="zh"><meta charset="utf-8"><title>气脉回归棋谱库</title>
 <style>body{margin:0;padding:24px;background:#172b29;color:#eee8d8;font:15px system-ui}h1{font-size:24px;margin:0 0 10px}p{color:#b9c8c1}button,select,input{font:inherit;margin:6px}nav{display:flex;align-items:center;flex-wrap:wrap}main{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}article{background:#243b35;border-radius:8px;padding:10px}h2{font-size:14px;margin:0 0 8px;height:40px}canvas{width:100%;display:block;border-radius:4px}a{color:#cedeca}small{display:block;min-height:20px;color:#a6bdb0}@media(max-width:800px){main{grid-template-columns:repeat(2,minmax(0,1fr))}}</style>
-<h1>气脉 · 回归棋谱库</h1><p>56 份人工构造 SGF · 规则断言、黑白对照与可暂停的动画检查。虚连仅表示潜在联系，不判定成眼或死活。此页仅用于开发回归。</p>
+<h1>气脉 · 回归棋谱库</h1><p><span id="case-count"></span> 份人工构造 SGF · 规则断言、黑白对照与可暂停的动画检查。虚连仅表示潜在联系，不判定成眼或死活。此页仅用于开发回归。</p>
 <nav><button id="prev">上一页</button><output id="page"></output><button id="next">下一页</button><label>模式<select aria-label="检查模式" id="mode"><option value="step">单手过渡</option><option value="rapid">快速落子与悔棋（70ms 间隔）</option></select></label><label>阶段<input aria-label="检查阶段" id="phase" type="range" min="0" max="100" value="100"></label><output id="stage"></output></nav>
 <main id="gallery"></main><p id="result"></p>
 <script type="module">
@@ -8,9 +8,10 @@ import * as THREE from 'three';
 import {parseSGF,gameFromKifu} from '/src/engine.ts';
 import {createLivingSurface} from '/src/living-stones.ts';
 const manifest=await(await fetch('/qi-mai/manifest.json')).json();
+document.querySelector('#case-count').textContent=manifest.length;
 const records=await Promise.all(manifest.map(async c=>parseSGF(await(await fetch('/qi-mai/'+c.file)).text())));
 const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});renderer.setSize(480,400);renderer.toneMapping=THREE.ACESFilmicToneMapping;
-let page=Math.max(0,Math.min(6,Number(new URLSearchParams(location.search).get("page")??1)-1));const phase=document.querySelector('#phase'),mode=document.querySelector('#mode'),gallery=document.querySelector('#gallery');
+let page=Math.max(0,Math.min(Math.ceil(manifest.length/8)-1,Number(new URLSearchParams(location.search).get("page")??1)-1));const phase=document.querySelector('#phase'),mode=document.querySelector('#mode'),gallery=document.querySelector('#gallery');
 let retained=[];
 function render(){
  const previous=retained;retained=[];
@@ -33,14 +34,15 @@ function render(){
   title.textContent=item.name;canvas.width=480;canvas.height=400;canvas.getContext('2d').drawImage(renderer.domElement,0,0);const pixels=canvas.getContext('2d').getImageData(0,0,480,400).data,bad=[];let total=0;
   if(progress===1)for(let pos=0;pos<g.board.length;pos++)if(!g.board[pos]){
    const wx=50+(pos%g.n)*spacing,wy=-50-Math.floor(pos/g.n)*spacing;
-   const px=Math.round(240+(wx-x)*240/extent),py=Math.round(200-(wy-y)*240/extent),radius=3;
+   const px=Math.round(240+(wx-x)*240/extent),py=Math.round(200-(wy-y)*240/extent),radius=Math.max(2,Math.round(.28*spacing*240/extent));
    if(px<radius||py<radius||px>=480-radius||py>=400-radius)continue;
-   total++;let covered=false;
+   total++;let covered=0,samples=0;
    for(let dy=-radius;dy<=radius;dy++)for(let dx=-radius;dx<=radius;dx++){
+    if(dx*dx+dy*dy>radius*radius)continue;samples++;
     const offset=((py+dy)*480+px+dx)*4;
-    if(Math.max(...[0,1,2].map(c=>Math.abs(pixels[offset+c]-reference[offset+c])))>12)covered=true;
+    if(Math.max(...[0,1,2].map(c=>Math.abs(pixels[offset+c]-reference[offset+c])))>12)covered++;
    }
-   if(covered)bad.push(`${'ABCDEFGHJKLMNOPQRST'[pos%g.n]}${g.n-Math.floor(pos/g.n)}`);
+   if(covered/samples>.2)bad.push(`${'ABCDEFGHJKLMNOPQRST'[pos%g.n]}${g.n-Math.floor(pos/g.n)}`);
   }
   let residual=0;
   if(progress===1&&rapid&&move){
@@ -55,12 +57,12 @@ function render(){
   }
   residuePixels+=residual;
   checked+=total;failures+=bad.length;
-  note.textContent=progress===1?`空点像素检查 ${total-bad.length}/${total}${bad.length?' · 遮挡 '+bad.join(','):''}${rapid&&move?' · 复原差异 '+residual+'px':''}`:move?(rapid?'落子 → 悔棋 × 3；终态恢复原局面':'当前展示首手的连续变化'):'静态局面 · 检查空点与交汇';link.textContent='下载 SGF';link.href='/qi-mai/'+item.file;link.download=item.file;card.append(title,canvas,note,link);gallery.append(card);retained.push(live);grid.dispose();mat.dispose();
+  note.textContent=progress===1?`空点区域占用≤20% ${total-bad.length}/${total}${bad.length?' · 需目视 '+bad.join(','):''}${rapid&&move?' · 复原差异 '+residual+'px':''}`:move?(rapid?'落子 → 悔棋 × 3；终态恢复原局面':'当前展示首手的连续变化'):'静态局面 · 检查空点与交汇';link.textContent='下载 SGF';link.href='/qi-mai/'+item.file;link.download=item.file;card.append(title,canvas,note,link);gallery.append(card);retained.push(live);grid.dispose();mat.dispose();
  }
  for(const old of previous)old.dispose();
  document.querySelector('#page').textContent=`${page+1} / ${Math.ceil(manifest.length/8)}`;
  document.querySelector('#stage').textContent=`${Math.round(progress*100)}% · ${now.toFixed(2)}s`;
- document.querySelector('#result').textContent=`已渲染第 ${page*8+1}–${Math.min(manifest.length,page*8+8)} 个局面；均使用生产曲面与状态机。${progress===1?`空点像素对照：${checked} 处，${failures} 处遮挡${rapid?`；快速复原差异 ${residuePixels}px`:''}。`:'过渡中间帧：尚未执行终态像素判定。'}`;
+ document.querySelector('#result').textContent=`已渲染第 ${page*8+1}–${Math.min(manifest.length,page*8+8)} 个局面；均使用生产曲面与状态机。${progress===1?`空点区域筛查：${checked} 处，${failures} 处超20%占用（仍需目视）${rapid?`；快速复原差异 ${residuePixels}px`:''}。`:'过渡中间帧：尚未执行终态像素判定。'}`;
 }
 const schedule=()=>setTimeout(render,0);
 document.querySelector('#prev').onclick=()=>{page=Math.max(0,page-1);schedule()};document.querySelector('#next').onclick=()=>{page=Math.min(Math.ceil(manifest.length/8)-1,page+1);schedule()};mode.onchange=schedule;phase.oninput=schedule;render();

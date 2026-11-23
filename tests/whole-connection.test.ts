@@ -72,3 +72,14 @@ test('GPU edges reference both lifecycle owners and only use one geometry path',
  assert.ok(material.fragmentShader.includes('wholeConnectionSection'));
  live.dispose();
 });
+
+test('opposed competition yields at each actual crossing without manufacturing a central node',()=>{
+ const edge:WholeConnection={a:[0,0],b:[3,0],solid:false,crossings:[{t:1/3,amount:1},{t:2/3,amount:1}]};
+ for(const x of [1,2])for(let z=.005;z<=.15;z+=.005)assert.ok(wholeConnectionDistance([x,0,z],edge)>0);
+ for(const x of [.7,1.5,2.3]){
+  const s=wholeConnectionSection(x,3,false);
+  assert.ok(wholeConnectionDistance([x,0,s.centerHeight],edge)<0);
+ }
+ const reversed={...edge,a:edge.b,b:edge.a,crossings:edge.crossings!.map(c=>({...c,t:1-c.t}))};
+ for(let x=.45;x<2.55;x+=.03)near(wholeConnectionDistance([x,.01,.03],edge),wholeConnectionDistance([x,.01,.03],reversed));
+});

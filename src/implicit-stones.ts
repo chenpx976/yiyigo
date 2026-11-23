@@ -1,19 +1,16 @@
 import * as THREE from 'three';
 import { connectionEnvelopeGLSL } from './connection-envelope';
-import { threadRouteGLSL } from './thread-route';
 import { connectionMotionGLSL } from './connection-motion';
 
 // Orthographic ray/solid intersection. Crowns and connections are evaluated as
 // ONE 3D field, so no overlapping shells or painted seam normals are needed.
 export const implicitFieldGLSL = `
 uniform sampler2D uData;
+uniform sampler2D uCrossings;
 uniform float uTime;
 uniform float uMotion;
-uniform float uBoardSize;
 ${connectionMotionGLSL}
-${threadRouteGLSL}
 vec4 record(int i){return texelFetch(uData,ivec2(i%1024,i/1024),0);}
-float unionDistance(float a,float b,float k){float h=max(k-abs(a-b),0.)/k;return min(a,b)-h*h*k*.25;}
 float ellipsoid(vec3 p,vec3 radii){
  float k0=length(p/radii),k1=length(p/(radii*radii));
  if(k0<.000001)return -min(radii.x,min(radii.y,radii.z));

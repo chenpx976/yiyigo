@@ -1,7 +1,15 @@
 import { connectionEase } from "./connection-motion";
+import { hiddenConnections, connectionKey } from "./connection-presentation";
+import type { CrossingTarget } from "./connection-presentation";
 import { Go, links } from "./engine";
 import type { Link } from "./engine";
+import { linkRoutePoints } from "./link-pattern";
 export type ConnectionTone = [number, number, number, number]; // strength, pressure, threat, gap
+export interface ConnectionCrossing extends CrossingTarget {
+  from: number;
+  to: number;
+  start: number;
+}
 export interface ConnectionState {
   link: Link;
   from: ConnectionTone;
@@ -12,8 +20,13 @@ export interface ConnectionState {
   merging?: boolean;
   fromVisibility?: number;
   toVisibility?: number;
+  crossings?: ConnectionCrossing[];
 }
 export const connectionDuration = 0.7;
+export function sampleCrossing(crossing: ConnectionCrossing, time: number) {
+  return crossing.from + (crossing.to - crossing.from) *
+    connectionEase((time - crossing.start) / connectionDuration);
+}
 export function sampleConnection(
   state: ConnectionState,
   time: number,
@@ -38,28 +51,19 @@ export function connectionTone(game: Go, link: Link): ConnectionTone {
     game.group(link.j).liberties.size,
   );
   const pressure = Math.max(0, Math.min(1, (4 - libs) / 3));
-  const dx = (link.j % game.n) - (link.i % game.n),
-    dy = Math.floor(link.j / game.n) - Math.floor(link.i / game.n);
-  const steps = Math.max(Math.abs(dx), Math.abs(dy));
-  const route =
-    link.kind === "diagonal"
-      ? [link.i + dx, link.i + dy * game.n]
-      : Array.from(
-          { length: steps - 1 },
-          (_, k) => link.i + (k + 1) * (dx / steps + (dy / steps) * game.n),
-        );
+  const route = linkRoutePoints(game.n, link);
   // Nearby enemy stones put pressure on a jump; this is not a tactical cut proof.
   const exposed =
     route.filter((p) =>
       game.neighbors(p).some((q) => game.board[q] === 3 - link.color),
-    ).length / route.length;
+    ).length / Math.max(1, route.length);
   const threat = link.threatened
     ? 0.85
     : link.kind === "diagonal"
       ? 0
       : exposed * 0.5;
   const base =
-    link.kind === "diagonal" ? 0.88 : link.kind === "small" ? 0.64 : 0.39;
+    link.kind === "diagonal" ? 0.88 : link.kind === "small" ? 0.64 : link.kind === "knight" ? 0.52 : 0.39;
   return [
     base * (1 - pressure * 0.43) * (1 - threat * 0.46),
     pressure,
@@ -72,29 +76,20 @@ export function updateConnections(
   states: Map<string, ConnectionState>,
   time: number,
   animate: boolean,
+  focus = -1,
 ): ConnectionState[] {
   const active = new Set<string>();
   const candidates=links(game).filter(link=>link.kind!=="solid");
   const tones=new Map(candidates.map(link=>[link,connectionTone(game,link)]));
+  const hidden = hiddenConnections(game, candidates, link => tones.get(link)![0], focus);
   for (const link of candidates) {
-    const key = `${link.color}:${link.i}:${link.j}`;
+    const key = connectionKey(link);
     active.add(key);
     const to = [...tones.get(link)!] as ConnectionTone,
       old = states.get(key);
-    // Presentation only: keep every rule-level link, but retire a weaker jump
-    // when two unthreatened diagonals already express a stronger route.
-    // Diagonals are never suppressed, so this cannot erase the alternate path.
-    if(link.kind==='small'){
-      const diagonals=candidates.filter(l=>l.kind==='diagonal'&&!l.threatened&&l.color===link.color);
-      const redundant=diagonals.some(a=>{
-        const via=a.i===link.i?a.j:a.j===link.i?a.i:-1;
-        if(via<0)return false;
-        const b=diagonals.find(b=>(b.i===via&&b.j===link.j)||(b.j===via&&b.i===link.j));
-        return b && Math.min(tones.get(a)![0],tones.get(b)![0])>to[0]*1.1;
-      });
-      if(redundant)to[0]=0;
-    }
-    if (!old || old.to.some((v, i) => v !== to[i]))
+    const visibility = Number(!hidden.has(link));
+    if (!old || old.to.some((v, i) => v !== to[i]) || old.toVisibility !== visibility ||
+      (!animate && (old.from.some((v, i) => v !== to[i]) || old.fromVisibility !== visibility)))
       states.set(key, {
         link,
         from: animate
@@ -103,10 +98,11 @@ export function updateConnections(
             : [0, to[1], to[2], to[3]]
           : to,
         to,
-        fromVisibility: animate ? old ? sampleVisibility(old,time) : 0 : Number(to[0]>0),
-        toVisibility: Number(to[0]>0),
+        fromVisibility: animate ? old ? sampleVisibility(old,time) : 0 : visibility,
+        toVisibility: visibility,
         start: time,
         cut: old ? sampleCut(old,time) : 0.5,
+        crossings: [],
       });
   }
   for (const [key, state] of states)
@@ -122,17 +118,15 @@ export function updateConnections(
         const { i, j, color } = state.link,
           dx = (j % game.n) - (i % game.n),
           dy = Math.floor(j / game.n) - Math.floor(i / game.n),
-          steps = Math.max(Math.abs(dx), Math.abs(dy));
+          lengthSquared = dx * dx + dy * dy;
         let cut = 0.5;
-        if (state.link.kind !== "diagonal")
-          for (let k = 1; k < steps; k++)
-            if (
-              game.board[i + k * (dx / steps + (dy / steps) * game.n)] ===
-              3 - color
-            ) {
-              cut = k / steps;
-              break;
-            }
+        const obstruction = linkRoutePoints(game.n, state.link)
+          .find(p => game.board[p] === 3 - color);
+        if (obstruction !== undefined) {
+          const px = obstruction % game.n - i % game.n;
+          const py = Math.floor(obstruction / game.n) - Math.floor(i / game.n);
+          cut = Math.max(0, Math.min(1, (px * dx + py * dy) / lengthSquared));
+        }
         const intact = game.board[i] === color && game.board[j] === color;
         const merged = intact && game.group(i).stones.has(j);
         const to:ConnectionTone=merged || !intact ? [0,0,0,0] : [0,1,1,1];
@@ -150,5 +144,8 @@ export function updateConnections(
         });
       }
     }
+  // Display suppression has its own visibility channel, never a tactical gap
+  // or pinched arms around an imaginary crossing stone.
+  for (const state of states.values()) state.crossings = [];
   return [...states.values()];
 }

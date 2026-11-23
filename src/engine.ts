@@ -1,3 +1,5 @@
+import { linkRoutes } from "./link-pattern";
+
 export type Color = 1 | 2;
 export type Cell = 0 | Color;
 export interface Chain {
@@ -27,7 +29,7 @@ export interface Kifu {
 export interface Link {
   i: number;
   j: number;
-  kind: "solid" | "small" | "large" | "diagonal";
+  kind: "solid" | "small" | "large" | "diagonal" | "knight";
   color: Cell;
   threatened: boolean;
 }
@@ -281,33 +283,32 @@ export function links(g: Go): Link[] {
                   ? "large"
                   : a === 1 && b === 1
                     ? "diagonal"
-                    : null;
+                    : (a === 1 && b === 2) || (a === 2 && b === 1)
+                      ? "knight"
+                      : null;
           if (!kind) continue;
           if (kind !== "solid" && membership.get(i) === membership.get(j))
             continue;
+          const routes = linkRoutes(g.n, { i, j, kind });
+          const enemy = 3 - g.board[i];
           if (kind === "small" || kind === "large") {
-            let steps = Math.max(a, b);
-            if (
-              Array.from(
-                { length: steps - 1 },
-                (_, k) => i + (k + 1) * (dx / steps + (dy / steps) * g.n),
-              ).some((p) => g.board[p])
-            )
+            if (routes[0].some((p) => g.board[p])) continue;
+          } else if (kind === "diagonal" || kind === "knight") {
+            // This is a local shape candidate, not a tactical proof of connection.
+            // Keep it while any shortest orthogonal route remains enemy-free;
+            // one enemy stone never by itself erases a knight's move candidate.
+            if (routes.every((route) => route.some((p) => g.board[p] === enemy)))
               continue;
           }
-          const cuts =
-            kind === "diagonal"
-              ? [i + dx, i + dy * g.n].filter(
-                  (p) => g.board[p] === 3 - g.board[i],
-                ).length
-              : 0;
-          if (cuts === 2) continue;
+          const threatened =
+            (kind === "diagonal" || kind === "knight") &&
+            routes.some((route) => route.some((p) => g.board[p] === enemy));
           result.push({
             i,
             j,
             kind,
             color: g.board[i],
-            threatened: cuts === 1,
+            threatened,
           });
         }
   return result;

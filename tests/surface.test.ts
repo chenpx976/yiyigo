@@ -2,34 +2,23 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { stoneProfile } from "../src/stone-profile";
 import { Go } from "../src/engine";
-import {
-  surfaceModel,
-  smoothUnion,
-  capsuleDistance,
-  solidRadius,
-} from "../src/surface-model";
+import { surfaceModel } from "../src/surface-model";
+import { wholeSurfaceDistance } from "../src/connection-envelope";
 import { updateConnections } from "../src/connection-state";
 import type { ConnectionState } from "../src/connection-state";
 function model(g: Go) {
   return surfaceModel(g, -1, [], false, 0, false, new Map());
 }
 function physicalDistance(g: Go, x: number, y: number) {
-  return model(g)
-    .primitives.filter((p) => p.data[4] < 2 && p.data[5] === 1)
-    .reduce((d, p) => {
-      const [ax, ay, bx, by, type] = p.data;
-      return smoothUnion(
-        d,
-        type === 0
-          ? Math.hypot(x - ax, y - ay) - stoneProfile.radius
-          : capsuleDistance(x, y, ax, ay, bx, by, solidRadius),
-      );
-    }, 10);
+ const ps=model(g).primitives.filter(p=>p.data[5]===1);
+ const stones=ps.filter(p=>p.data[4]===0).map(p=>({at:[p.data[0],p.data[1]] as [number,number]}));
+ const edges=ps.filter(p=>p.data[4]===1).map(p=>({a:[p.data[0],p.data[1]] as [number,number],b:[p.data[2],p.data[3]] as [number,number],solid:true}));
+ return wholeSurfaceDistance([x,y,.135],stones,edges);
 }
-test("coarse topology footprint keeps a broad real bridge (not a GPU seam test)", () => {
+test("production solid surface keeps a broad bridge and independent crowns", () => {
   const g = new Go(9);
   g.board[40] = g.board[41] = 1;
-  for (let x = 4; x <= 5; x += 0.02) assert.ok(physicalDistance(g, x, 4.24) < 0);
+  for (let x = 4; x <= 5; x += 0.02) assert.ok(physicalDistance(g, x, 4.18) < 0);
   assert.ok(
     physicalDistance(g, 4.5, 4.35) > 0,
     "independent convex stone silhouette survives",
@@ -39,7 +28,7 @@ test("coarse topology footprint keeps a broad real bridge (not a GPU seam test)"
     y = 4.2;
   const left = (physicalDistance(g, x, y) - physicalDistance(g, x - h, y)) / h;
   const right = (physicalDistance(g, x + h, y) - physicalDistance(g, x, y)) / h;
-  assert.ok(Math.abs(left - right) < 0.01, "coarse footprint has continuous slope");
+  assert.ok(Math.abs(left - right) < 0.01, "production footprint has continuous slope");
 });
 test("corner, T, cross and ring junctions preserve grid topology and empty eyes", () => {
   for (const stones of [

@@ -1,0 +1,48 @@
+<!doctype html><html lang="zh"><meta charset="utf-8"><title>气脉 · 联系与盘面影响</title>
+
+<style>body{margin:0;padding:24px;background:#172b29;color:#eee8d8;font:15px system-ui}h1{font-size:23px;margin:0 0 12px}nav{display:flex;gap:14px;flex-wrap:wrap;align-items:center}select,button{font:inherit;background:#304740;border:1px solid #5e7468;color:inherit;padding:8px;border-radius:5px}main{display:grid;grid-template-columns:min(72vw,950px,calc((100vh - 155px)*1.04)) minmax(220px,1fr);gap:20px;margin-top:20px}#board{position:relative;width:100%;aspect-ratio:1000/960}#board>canvas{display:block;width:100%}aside{padding-top:20px}p{line-height:1.7;color:#c2cec5}a{color:#d5dfb8}#readout{font:13px/1.7 ui-monospace,monospace}label{display:flex;gap:7px;align-items:center}@media(max-width:950px){main{grid-template-columns:1fr}}.board-hits{position:absolute;inset:0}.intersection{position:absolute;border:0;padding:0;border-radius:50%;background:none;cursor:crosshair;touch-action:manipulation}.intersection:focus-visible{outline:2px solid #b78b50;outline-offset:-3px}#board canvas{border-radius:6px}aside{max-width:480px}nav label{white-space:nowrap}</style>
+<h1>气脉 · 联系与盘面影响</h1>
+<nav><a href="/dev/case-atlas.html">64 例总览</a><label>局面<select id="case" aria-label="影响局面"><option value="local">小尖、小飞与混色交叉</option><option value="front">两壁对峙与空旷区</option><option value="invasion">围势中的打入</option><option value="gu">古力 × 周睿羊 · 127 手</option><option value="cho">赵治勋 × 曹薰铉 · 150 手</option></select></label><label><input type="checkbox" id="field" checked>盘面影响</label><button id="move">落一手</button><button id="undo">悔棋</button><button id="rapid">快速往返 × 4</button><button id="clear">取消关注</button></nav>
+<main><section id="board"></section><aside><h2 id="title"></h2><p id="description"></p><p>指向或点击棋块，展开它的潜在联系。小飞默认不画丝，关注相关棋块时才展开。小尖、小飞都不共享气，也不保证接得上。混色交叉默认退隐双方；关注其中一块时再展开。</p><p>黑方影响轻压木色，白方轻提亮；双方强对峙保留一层低反差的中性色。它只表示周围影响，不表示实地、死活或胜率。空点和棋线应始终清楚。</p><output id="readout"></output></aside></main>
+<script type="module">
+import {Go,parseSGF} from '/src/engine.ts';
+import {BoardView} from '/src/board.ts';
+import {influenceField} from '/src/influence.ts';
+import {coord} from '/src/position.ts';
+const descriptions={local:['小尖 · 小飞 · 异色交叉','上部：黑白小尖、小飞（指向棋块才展开小飞）；中部：小飞受侵入；下部：两个混色交叉，关注一个不应干扰另一个。落一手会干扰左侧小飞。'],front:['两壁对峙 · 远处空白','两堵棋墙之间黑白影响都强，不能因为相减为零就画成空白。右半盘空旷区应保持原木色。'],invasion:['围势 · 打入','黑方围出框架，内部仍是可落子的空点。落下白棋后，局部影响逐渐变化，不能把框架直接当作黑方实地。'],gu:['古力 × 周睿羊 · 127 手','检查白棋密集区、边角混战与中央留白。点击落一手可继续棋谱；快速往返须回到相同棋局。'],cho:['赵治勋 × 曹薰铉 · 150 手','检查全盘正常尺寸的棋子、连接和盘面影响。影响不应压过棋子或掩盖棋线。']};
+const params=new URLSearchParams(location.search),select=document.querySelector('#case');
+if(Object.hasOwn(descriptions,params.get('case')))select.value=params.get('case');
+let game=new Go(19),selected=-1,moves=[],cursor=0,running=false;
+const board=new BoardView(document.querySelector('#board'),i=>{if(game.board[i]){selected=i;board.render(game,selected,false,false)}},i=>read(i));
+await board.init();
+function read(i=9*19+9){const f=influenceField(game);document.querySelector('#readout').textContent=`${coord(i,19)} · 黑 ${f.black[i].toFixed(3)} / 白 ${f.white[i].toFixed(3)} · 合计 ${f.total[i].toFixed(3)} / 对峙 ${f.contest[i].toFixed(3)} · ${game.board.filter(Boolean).length} 子`;}
+function put(color,points){for(const [x,y]of points)game.board[y*19+x]=color;}
+async function load(){
+ game=new Go(19);selected=-1;cursor=0;moves=[];const id=select.value;
+ if(id==='local'){
+  put(1,[[2,2],[3,3],[7,2],[9,3],[2,7],[4,8],[3,12],[3,14],[13,12],[13,14]]);
+  put(2,[[12,2],[13,3],[15,5],[17,6],[3,7],[7,7],[9,8],[8,7],[2,13],[4,13],[12,13],[14,13]]);
+  moves=[{i:8*19+3,color:2}];
+ }else if(id==='front'){
+  for(let y=6;y<=12;y++){put(1,[[5,y]]);put(2,[[9,y]])}
+  put(1,[[1,16],[2,16],[2,17]]);put(2,[[15,2],[16,2],[16,3]]);
+  moves=[{i:9*19+7,color:1}];
+ }else if(id==='invasion'){
+  put(1,[[3,5],[5,4],[7,4],[9,4],[11,5],[3,7],[3,9],[3,11],[5,12],[7,12],[9,12],[11,11],[11,9],[11,7]]);
+  put(2,[[15,3],[16,4],[15,5],[15,13],[16,14]]);moves=[{i:8*19+7,color:2}];
+ }else{
+  const kifu=parseSGF(await(await fetch('/games/'+id+'.sgf')).text());const count=id==='gu'?127:150;
+  for(const m of kifu.moves.slice(0,count))game.play(m.i,m.color);moves=kifu.moves.slice(count);
+ }
+ board.render(game,-1,false,false);board.setInfluenceVisible(document.querySelector('#field').checked);read();
+ document.querySelector('#title').textContent=descriptions[id][0];document.querySelector('#description').textContent=descriptions[id][1];
+ const url=new URL(location.href);url.searchParams.set('case',id);history.replaceState(null,'',url);
+}
+function step(){if(cursor>=moves.length)return;const m=moves[cursor];if(!game.play(m.i,m.color)){cursor++;board.render(game,selected,true,false);read();}}
+function undo(){if(!cursor)return;game.undo();cursor--;board.render(game,selected,true,false);read();}
+select.onchange=load;document.querySelector('#move').onclick=step;document.querySelector('#undo').onclick=undo;
+document.querySelector('#field').onchange=e=>board.setInfluenceVisible(e.target.checked);
+document.querySelector('#clear').onclick=()=>{selected=-1;board.render(game,-1);read()};
+document.querySelector('#rapid').onclick=async()=>{if(running||cursor>=moves.length)return;running=true;const initial=game.board.join('');for(let k=0;k<4;k++){step();await new Promise(r=>setTimeout(r,100));undo();await new Promise(r=>setTimeout(r,120));}running=false;document.querySelector('#readout').dataset.restored=String(initial===game.board.join(''));};
+await load();
+</script></html>

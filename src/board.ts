@@ -2,7 +2,8 @@ import * as THREE from "three";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { Go, analyzeMove } from "./engine";
 import type { Cell } from "./engine";
-import { coord, geography, groups, influence } from "./position";
+import { coord, geography, groups } from "./position";
+import { createInfluenceSurface } from "./influence-surface";
 import { createLivingSurface } from "./living-stones";
 import type { LivingSurface } from "./living-stones";
 import { createTableScene, disposeObject } from "./table-scene";
@@ -28,6 +29,8 @@ export class BoardView {
   private environment!: THREE.WebGLRenderTarget;
   private furniture!: ReturnType<typeof createTableScene>;
   private live: LivingSurface | null = null;
+  private field = createInfluenceSurface();
+  private surfaceFocus = -1;
   private connections = new Map<string, ConnectionState>();
   private surfaces = new Map<string, SurfaceTransition>();
   private game = new Go();
@@ -103,7 +106,7 @@ export class BoardView {
     fill.position.set(1100, -900, 700);
     this.scene.add(fill);
     this.furniture = createTableScene();
-    this.scene.add(this.furniture.scene, this.fixed, this.marks, this.hints);
+    this.scene.add(this.furniture.scene, this.field.mesh, this.fixed, this.marks, this.hints);
     this.hitLayer.className = "board-hits";
     this.hitLayer.setAttribute("role", "group");
     this.hitLayer.setAttribute("aria-label", "围棋棋盘");
@@ -136,6 +139,7 @@ export class BoardView {
       this.lastTime = now;
       this.clock += dt;
       this.live?.setTime(this.clock);
+      this.field.setTime(this.clock);
       this.draw();
     };
     this.frame = requestAnimationFrame(tick);
@@ -271,47 +275,17 @@ export class BoardView {
     this.fixed.add(mesh);
     this.size = n;
   }
-  private paintField() {
-    const n = this.game.n,
-      values = influence(this.game),
-      canvas = document.createElement("canvas");
-    canvas.width = canvas.height = 128;
-    const ctx = canvas.getContext("2d")!,
-      pixels = ctx.createImageData(128, 128);
-    for (let y = 0; y < 128; y++)
-      for (let x = 0; x < 128; x++) {
-        const gx = (x / 127) * (n - 1),
-          gy = (y / 127) * (n - 1),
-          ix = Math.min(n - 2, Math.floor(gx)),
-          iy = Math.min(n - 2, Math.floor(gy)),
-          fx = gx - ix,
-          fy = gy - iy;
-        const v =
-          (values[iy * n + ix] * (1 - fx) + values[iy * n + ix + 1] * fx) *
-            (1 - fy) +
-          (values[(iy + 1) * n + ix] * (1 - fx) +
-            values[(iy + 1) * n + ix + 1] * fx) *
-            fy;
-        const p = (y * 128 + x) * 4;
-        pixels.data[p] = v > 0 ? 45 : 255;
-        pixels.data[p + 1] = v > 0 ? 109 : 249;
-        pixels.data[p + 2] = v > 0 ? 92 : 228;
-        pixels.data[p + 3] = Math.abs(v) * 24;
-      }
-    ctx.putImageData(pixels, 0, 0);
-    const texture = new THREE.CanvasTexture(canvas);
-    texture.colorSpace = THREE.SRGBColorSpace;
-    this.markTextures.push(texture);
-    const mesh = new THREE.Mesh(
-      new THREE.PlaneGeometry(660, 660),
-      new THREE.MeshBasicMaterial({
-        map: texture,
-        transparent: true,
-        depthWrite: false,
-      }),
+  private focusedGroup(i: number) {
+    return this.game.board[i] ? Math.min(...this.game.group(i).stones) : -1;
+  }
+  private rebuildSurface(previous: Cell[], animate: boolean, focus: number) {
+    if (this.live) { this.scene.remove(this.live.mesh); this.live.dispose(); }
+    this.surfaceFocus = focus;
+    this.live = createLivingSurface(
+      this.game, previous, animate, this.clock, !this.reduced.matches,
+      this.connections, this.surfaces, false, focus,
     );
-    mesh.position.set(380, -380, 0.25);
-    this.marks.add(mesh);
+    this.scene.add(this.live.mesh);
   }
   render(game: Go, selected = -1, animate = false, interactive = true) {
     const start = performance.now(),
@@ -332,21 +306,8 @@ export class BoardView {
     this.clear(this.hints);
     this.markTextures.forEach((t) => t.dispose());
     this.markTextures = [];
-    if (this.live) {
-      this.scene.remove(this.live.mesh);
-      this.live.dispose();
-    }
-    this.live = createLivingSurface(
-      game,
-      same ? old : [],
-      animate && same,
-      this.clock,
-      !this.reduced.matches,
-      this.connections,
-      this.surfaces,
-    );
-    this.scene.add(this.live.mesh);
-    this.paintField();
+    this.rebuildSurface(same ? old : [], animate && same, this.focusedGroup(selected));
+    this.field.update(game, this.clock, animate && same, !this.reduced.matches);
     const s = 660 / (game.n - 1),
       chains = groups(game),
       liberties = new Map<number, Set<number>>();
@@ -416,7 +377,13 @@ export class BoardView {
     this.host.dataset.stoneCount = String(game.board.filter(Boolean).length);
     this.host.dataset.renderMs = (performance.now() - start).toFixed(1);
   }
+  setInfluenceVisible(visible: boolean) {
+    this.field.mesh.visible = visible;
+    this.draw();
+  }
   focus(i: number) {
+    const focus = this.focusedGroup(i);
+    if (focus !== this.surfaceFocus) this.rebuildSurface(this.previous, false, focus);
     this.clear(this.hints);
     if (i < 0) {
       this.draw();
@@ -585,6 +552,7 @@ export class BoardView {
       this.scene.remove(this.live.mesh);
       this.live.dispose();
     }
+    this.field.dispose();
     disposeObject(this.scene);
     this.fixedTextures.forEach((t) => t.dispose());
     this.markTextures.forEach((t) => t.dispose());

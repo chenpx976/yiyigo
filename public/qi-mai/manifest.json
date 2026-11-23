@@ -1410,5 +1410,393 @@
         ]
       }
     ]
+  },
+  {
+    "id": "opposed-crossing",
+    "name": "异色交叉：默认退隐、关注展开",
+    "file": "opposed-crossing.sgf",
+    "n": 19,
+    "focus": "jj",
+    "tags": [
+      "crossing",
+      "opposed"
+    ],
+    "source": "authored regression fixture (not a professional game)",
+    "checks": [
+      {
+        "at": 0,
+        "empty": [
+          "jj"
+        ]
+      },
+      {
+        "at": 0,
+        "link": [
+          "ji",
+          "jk",
+          "small"
+        ],
+        "threat": false
+      },
+      {
+        "at": 0,
+        "link": [
+          "ij",
+          "kj",
+          "small"
+        ],
+        "threat": false
+      },
+      {
+        "at": 0,
+        "lib": [
+          "ji",
+          4
+        ]
+      },
+      {
+        "at": 0,
+        "lib": [
+          "ij",
+          4
+        ]
+      }
+    ]
+  },
+  {
+    "id": "opposed-crossing-swap",
+    "name": "异色交叉：默认退隐、关注展开 · 反色",
+    "file": "opposed-crossing-swap.sgf",
+    "n": 19,
+    "focus": "jj",
+    "tags": [
+      "crossing",
+      "opposed"
+    ],
+    "source": "authored regression fixture (not a professional game)",
+    "checks": [
+      {
+        "at": 0,
+        "empty": [
+          "jj"
+        ]
+      },
+      {
+        "at": 0,
+        "link": [
+          "ji",
+          "jk",
+          "small"
+        ],
+        "threat": false
+      },
+      {
+        "at": 0,
+        "link": [
+          "ij",
+          "kj",
+          "small"
+        ],
+        "threat": false
+      },
+      {
+        "at": 0,
+        "lib": [
+          "ji",
+          4
+        ]
+      },
+      {
+        "at": 0,
+        "lib": [
+          "ij",
+          4
+        ]
+      }
+    ]
+  },
+  {
+    "id": "knight",
+    "name": "小飞：默认退隐、关注展开",
+    "file": "knight.sgf",
+    "n": 19,
+    "focus": "kj",
+    "tags": [
+      "knight"
+    ],
+    "source": "authored regression fixture (not a professional game)",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "jj",
+          "lk",
+          "knight"
+        ],
+        "threat": false
+      },
+      {
+        "at": 0,
+        "lib": [
+          "jj",
+          4
+        ]
+      },
+      {
+        "at": 0,
+        "lib": [
+          "lk",
+          4
+        ]
+      },
+      {
+        "at": 0,
+        "empty": [
+          "kj",
+          "lj",
+          "jk",
+          "kk"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "knight-intrusion",
+    "name": "小飞：单点侵入仍有潜在通路",
+    "file": "knight-intrusion.sgf",
+    "n": 19,
+    "focus": "kj",
+    "tags": [
+      "knight",
+      "pressure"
+    ],
+    "source": "authored regression fixture (not a professional game)",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "jj",
+          "lk",
+          "knight"
+        ],
+        "threat": true
+      },
+      {
+        "at": 0,
+        "lib": [
+          "jj",
+          4
+        ]
+      },
+      {
+        "at": 0,
+        "lib": [
+          "lk",
+          3
+        ]
+      },
+      {
+        "at": 0,
+        "empty": [
+          "kj",
+          "jk",
+          "kk"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "knight-local-block",
+    "name": "小飞：局部通路封断",
+    "file": "knight-local-block.sgf",
+    "n": 19,
+    "focus": "kj",
+    "tags": [
+      "knight",
+      "cut",
+      "transition"
+    ],
+    "source": "authored regression fixture (not a professional game)",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "jj",
+          "lk",
+          "knight"
+        ],
+        "threat": true
+      },
+      {
+        "at": 0,
+        "empty": [
+          "kk"
+        ]
+      },
+      {
+        "at": 1,
+        "link": [
+          "jj",
+          "lk",
+          null
+        ]
+      },
+      {
+        "at": 1,
+        "lib": [
+          "jj",
+          3
+        ]
+      },
+      {
+        "at": 1,
+        "lib": [
+          "lk",
+          3
+        ]
+      }
+    ]
+  },
+  {
+    "id": "knight-swap",
+    "name": "小飞：默认退隐、关注展开 · 反色",
+    "file": "knight-swap.sgf",
+    "n": 19,
+    "focus": "kj",
+    "tags": [
+      "knight"
+    ],
+    "source": "authored regression fixture (not a professional game)",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "jj",
+          "lk",
+          "knight"
+        ],
+        "threat": false
+      },
+      {
+        "at": 0,
+        "lib": [
+          "jj",
+          4
+        ]
+      },
+      {
+        "at": 0,
+        "lib": [
+          "lk",
+          4
+        ]
+      },
+      {
+        "at": 0,
+        "empty": [
+          "kj",
+          "lj",
+          "jk",
+          "kk"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "knight-intrusion-swap",
+    "name": "小飞：单点侵入仍有潜在通路 · 反色",
+    "file": "knight-intrusion-swap.sgf",
+    "n": 19,
+    "focus": "kj",
+    "tags": [
+      "knight",
+      "pressure"
+    ],
+    "source": "authored regression fixture (not a professional game)",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "jj",
+          "lk",
+          "knight"
+        ],
+        "threat": true
+      },
+      {
+        "at": 0,
+        "lib": [
+          "jj",
+          4
+        ]
+      },
+      {
+        "at": 0,
+        "lib": [
+          "lk",
+          3
+        ]
+      },
+      {
+        "at": 0,
+        "empty": [
+          "kj",
+          "jk",
+          "kk"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "knight-local-block-swap",
+    "name": "小飞：局部通路封断 · 反色",
+    "file": "knight-local-block-swap.sgf",
+    "n": 19,
+    "focus": "kj",
+    "tags": [
+      "knight",
+      "cut",
+      "transition"
+    ],
+    "source": "authored regression fixture (not a professional game)",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "jj",
+          "lk",
+          "knight"
+        ],
+        "threat": true
+      },
+      {
+        "at": 0,
+        "empty": [
+          "kk"
+        ]
+      },
+      {
+        "at": 1,
+        "link": [
+          "jj",
+          "lk",
+          null
+        ]
+      },
+      {
+        "at": 1,
+        "lib": [
+          "jj",
+          3
+        ]
+      },
+      {
+        "at": 1,
+        "lib": [
+          "lk",
+          3
+        ]
+      }
+    ]
   }
 ]

@@ -1,5 +1,6 @@
 import { Go, analyzeMove } from "./engine";
 import type { Cell, Chain, Color, HistoryEntry } from "./engine";
+import { influenceField } from "./influence";
 export interface Group extends Chain {
   color: Color;
   anchor: number;
@@ -42,24 +43,10 @@ export function geography(i: number, n: number) {
   if (n === 9) note += " 九路全盘紧凑，中央同样重要，先看局部急所。";
   return { zone, line, edges, note };
 }
-// Diffusion on the actual board graph. Stones pin the field; the edge is a boundary,
-// never an extra liberty or a fictitious friendly stone. This is NOT ownership/score.
+// Compatibility for callers needing only the net influence. Renderers should
+// use influenceField to retain the distinction between open and contested areas.
 export function influence(game: Go, iterations = 28): Float32Array {
-  let field = Float32Array.from(game.board, (c) =>
-    c === 1 ? 1 : c === 2 ? -1 : 0,
-  );
-  const neighbors = game.board.map((_, i) => game.neighbors(i));
-  for (let step = 0; step < iterations; step++) {
-    const next = field.slice();
-    game.board.forEach((c, i) => {
-      if (!c)
-        next[i] =
-          (0.94 * neighbors[i].reduce((sum, j) => sum + field[j], 0)) /
-          neighbors[i].length;
-    });
-    field = next;
-  }
-  return field;
+  return influenceField(game, iterations).advantage;
 }
 export function localSituation(game: Go, i: number) {
   const geo = geography(i, game.n),

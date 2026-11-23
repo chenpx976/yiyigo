@@ -2,35 +2,13 @@ import { Go, links } from "./engine";
 import type { Cell } from "./engine";
 import { groups } from "./position";
 import { updateConnections, connectionDuration } from "./connection-state";
-import type { ConnectionState } from "./connection-state";
+import type { ConnectionState, ConnectionCrossing } from "./connection-state";
 import { updateSurfaces, morphDuration } from "./surface-transition";
 import type { SurfaceTransition, SurfaceTarget } from "./surface-transition";
 export interface SurfacePrimitive {
   data: number[];
   bounds: [number, number, number, number];
-}
-export const surfaceBlend = 0.12;
-export const solidRadius = 0.27;
-export function smoothUnion(a: number, b: number, k = surfaceBlend) {
-  const h = Math.max(k - Math.abs(a - b), 0) / k;
-  return Math.min(a, b) - h * h * k * 0.25;
-}
-export function capsuleDistance(
-  x: number,
-  y: number,
-  ax: number,
-  ay: number,
-  bx: number,
-  by: number,
-  r: number,
-) {
-  const dx = bx - ax,
-    dy = by - ay;
-  const t = Math.max(
-    0,
-    Math.min(1, ((x - ax) * dx + (y - ay) * dy) / (dx * dx + dy * dy || 1)),
-  );
-  return Math.hypot(x - ax - t * dx, y - ay - t * dy) - r;
+  crossings?: ConnectionCrossing[];
 }
 export type SurfaceUpdateMode = "reset" | "retarget" | "sample";
 
@@ -60,9 +38,12 @@ function pruneRetiredStates(
 ) {
   for (const [key,state] of surfaces)
     if (state.to === 0 && time-state.start >= morphDuration) surfaces.delete(key);
-  for (const [key,state] of connections)
+  for (const [key,state] of connections) {
     if (!activeConnections.has(key) && state.to[0] === 0 && time-state.start >= connectionDuration)
       connections.delete(key);
+    else if (state.crossings?.some(c => c.to === 0 && time-c.start >= connectionDuration))
+      state.crossings = state.crossings.filter(c => c.to !== 0 || time-c.start < connectionDuration);
+  }
 }
 
 export function surfaceModel(
@@ -95,12 +76,14 @@ export function surfaceModel(
     cut = 0.5,
     merging = 0,
     cutFrom = cut,
+    crossings?: ConnectionCrossing[],
   ) => {
     const ax = i % n,
       ay = Math.floor(i / n),
       bx = j % n,
       by = Math.floor(j / n);
     primitives.push({
+      crossings,
       data: [
         ax,
         ay,
@@ -149,11 +132,13 @@ export function surfaceModel(
     surfaces.clear();
     connections.clear();
     updateSurfaces(targets, surfaces, time, false);
-    updateConnections(game, connections, time, false);
+    updateConnections(game, connections, time, false, selected);
   } else if (mode === "retarget") {
     updateSurfaces(targets, surfaces, time, true);
-    updateConnections(game, connections, time, true);
+    updateConnections(game, connections, time, true, selected);
   } else {
+    // Focus changes only connection visibility; unchanged targets keep their clocks.
+    updateConnections(game, connections, time, true, selected);
     pruneRetiredStates(
       connections,
       surfaces,
@@ -198,26 +183,12 @@ export function surfaceModel(
       state.cut,
       Number(state.merging ?? false),
       state.cutFrom ?? state.cut,
+      state.crossings,
     );
   }
-  // A connected stone now owns the material up to the midpoint of each pull.
-  // Extend its spatial support; links themselves are constraints, not solids.
-  for (const node of primitives) {
-    if (node.data[4] !== 0) continue;
-    const [x,y] = node.data;
-    for (const link of primitives) {
-      if (link.data[4] === 0 || link.data[5] !== node.data[5]) continue;
-      const [ax,ay,bx,by] = link.data;
-      if (!((x===ax && y===ay)||(x===bx && y===by))) continue;
-      const mx=(ax+bx)/2, my=(ay+by)/2;
-      node.bounds[0]=Math.min(node.bounds[0],mx-.65);
-      node.bounds[1]=Math.min(node.bounds[1],my-.65);
-      node.bounds[2]=Math.max(node.bounds[2],mx+.65);
-      node.bounds[3]=Math.max(node.bounds[3],my+.65);
-    }
-  }
-  // Each tile evaluates every primitive whose smooth-union support intersects it.
-  // Adjacent tiles share primitives near their boundary; no fixed cap drops complex junctions.
+  // Each edge owns its entire connection volume and keeps its full bounds.
+  // Endpoint lifecycle records are globally addressable; body bounds only need
+  // to cover the fixed stone. No half-edge support or smooth-union halo remains.
   const bins = Array.from({ length: n * n }, (_, i) =>
     primitives.flatMap((p, k) => {
       const x = i % n,

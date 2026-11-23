@@ -95,10 +95,10 @@ test('visual atlas packs the full corpus into three boards without overlapping c
  }
 });
 
-test('twenty black and white basic-shape cases fit on one nineteen-line visual board',()=>{
- const categories=new Set(['line','elbow','tee','cross','diagonal','small-jump','large-jump','three-around','four-around','crowded-hub']);
+test('twenty-four black, white and mixed basic-shape cases fit on one nineteen-line visual board',()=>{
+ const categories=new Set(['line','elbow','tee','cross','diagonal','knight','small-jump','large-jump','three-around','four-around','crowded-hub','opposed-crossing']);
  const selected=items.filter(item=>categories.has(item.id.replace(/-swap$/,'')));
- assert.equal(selected.length,20);
+ assert.equal(selected.length,24);
  const packed=packVisualCases(selected);
- assert.equal(packed.length,1);assert.equal(packed[0].placements.length,20);
+ assert.equal(packed.length,1);assert.equal(packed[0].placements.length,24);
 });
