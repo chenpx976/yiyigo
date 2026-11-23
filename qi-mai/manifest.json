@@ -1,0 +1,1802 @@
+[
+  {
+    "id": "center",
+    "name": "中央单子",
+    "checks": [
+      {
+        "at": 0,
+        "lib": [
+          "jj",
+          4
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [],
+    "file": "center.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "center-swap",
+    "name": "中央单子 · 反色",
+    "checks": [
+      {
+        "at": 0,
+        "lib": [
+          "jj",
+          4
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [],
+    "file": "center-swap.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "corner",
+    "name": "角部单子",
+    "checks": [
+      {
+        "at": 0,
+        "lib": [
+          "aa",
+          2
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "bb",
+    "tags": [],
+    "file": "corner.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "corner-swap",
+    "name": "角部单子 · 反色",
+    "checks": [
+      {
+        "at": 0,
+        "lib": [
+          "aa",
+          2
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "bb",
+    "tags": [],
+    "file": "corner-swap.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "edge",
+    "name": "边上单子",
+    "checks": [
+      {
+        "at": 0,
+        "lib": [
+          "aj",
+          3
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "bj",
+    "tags": [],
+    "file": "edge.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "edge-swap",
+    "name": "边上单子 · 反色",
+    "checks": [
+      {
+        "at": 0,
+        "lib": [
+          "aj",
+          3
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "bj",
+    "tags": [],
+    "file": "edge-swap.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "line",
+    "name": "实连三子",
+    "checks": [
+      {
+        "at": 0,
+        "lib": [
+          "jj",
+          8
+        ]
+      },
+      {
+        "at": 0,
+        "link": [
+          "ij",
+          "jj",
+          "solid"
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [],
+    "file": "line.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "line-swap",
+    "name": "实连三子 · 反色",
+    "checks": [
+      {
+        "at": 0,
+        "lib": [
+          "jj",
+          8
+        ]
+      },
+      {
+        "at": 0,
+        "link": [
+          "ij",
+          "jj",
+          "solid"
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [],
+    "file": "line-swap.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "elbow",
+    "name": "实连转角",
+    "checks": [
+      {
+        "at": 0,
+        "lib": [
+          "jj",
+          7
+        ]
+      },
+      {
+        "at": 0,
+        "link": [
+          "kj",
+          "jk",
+          null
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [],
+    "file": "elbow.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "elbow-swap",
+    "name": "实连转角 · 反色",
+    "checks": [
+      {
+        "at": 0,
+        "lib": [
+          "jj",
+          7
+        ]
+      },
+      {
+        "at": 0,
+        "link": [
+          "kj",
+          "jk",
+          null
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [],
+    "file": "elbow-swap.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "tee",
+    "name": "实连三岔",
+    "checks": [
+      {
+        "at": 0,
+        "lib": [
+          "jj",
+          8
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [],
+    "file": "tee.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "tee-swap",
+    "name": "实连三岔 · 反色",
+    "checks": [
+      {
+        "at": 0,
+        "lib": [
+          "jj",
+          8
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [],
+    "file": "tee-swap.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "cross",
+    "name": "实连四岔",
+    "checks": [
+      {
+        "at": 0,
+        "lib": [
+          "jj",
+          8
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [],
+    "file": "cross.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "cross-swap",
+    "name": "实连四岔 · 反色",
+    "checks": [
+      {
+        "at": 0,
+        "lib": [
+          "jj",
+          8
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [],
+    "file": "cross-swap.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "eye-ring",
+    "name": "单眼空点保留",
+    "checks": [
+      {
+        "at": 0,
+        "lib": [
+          "ii",
+          13
+        ]
+      },
+      {
+        "at": 0,
+        "empty": [
+          "jj"
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [],
+    "file": "eye-ring.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "eye-ring-swap",
+    "name": "单眼空点保留 · 反色",
+    "checks": [
+      {
+        "at": 0,
+        "lib": [
+          "ii",
+          13
+        ]
+      },
+      {
+        "at": 0,
+        "empty": [
+          "jj"
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [],
+    "file": "eye-ring-swap.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "two-eyes",
+    "name": "两个封闭空点（不做死活证明）",
+    "checks": [
+      {
+        "at": 0,
+        "empty": [
+          "jj",
+          "lj"
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "kj",
+    "tags": [],
+    "file": "two-eyes.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "two-eyes-swap",
+    "name": "两个封闭空点（不做死活证明） · 反色",
+    "checks": [
+      {
+        "at": 0,
+        "empty": [
+          "jj",
+          "lj"
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "kj",
+    "tags": [],
+    "file": "two-eyes-swap.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "diagonal",
+    "name": "斜连不是实连",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "jj",
+          "kk",
+          "diagonal"
+        ],
+        "threat": false
+      },
+      {
+        "at": 0,
+        "lib": [
+          "jj",
+          4
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [],
+    "file": "diagonal.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "diagonal-swap",
+    "name": "斜连不是实连 · 反色",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "jj",
+          "kk",
+          "diagonal"
+        ],
+        "threat": false
+      },
+      {
+        "at": 0,
+        "lib": [
+          "jj",
+          4
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [],
+    "file": "diagonal-swap.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "diagonal-threat",
+    "name": "斜连一处断点被占",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "jj",
+          "kk",
+          "diagonal"
+        ],
+        "threat": true
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [],
+    "file": "diagonal-threat.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "diagonal-threat-swap",
+    "name": "斜连一处断点被占 · 反色",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "jj",
+          "kk",
+          "diagonal"
+        ],
+        "threat": true
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [],
+    "file": "diagonal-threat-swap.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "diagonal-cut",
+    "name": "斜连两处断点被占",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "jj",
+          "kk",
+          null
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [],
+    "file": "diagonal-cut.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "diagonal-cut-swap",
+    "name": "斜连两处断点被占 · 反色",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "jj",
+          "kk",
+          null
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [],
+    "file": "diagonal-cut-swap.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "small-jump",
+    "name": "小跳",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "jj",
+          "lj",
+          "small"
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [],
+    "file": "small-jump.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "small-jump-swap",
+    "name": "小跳 · 反色",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "jj",
+          "lj",
+          "small"
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [],
+    "file": "small-jump-swap.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "large-jump",
+    "name": "大跳",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "jj",
+          "mj",
+          "large"
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "kj",
+    "tags": [],
+    "file": "large-jump.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "large-jump-swap",
+    "name": "大跳 · 反色",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "jj",
+          "mj",
+          "large"
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "kj",
+    "tags": [],
+    "file": "large-jump-swap.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "jump-cut",
+    "name": "大跳偏心切断并撤销",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "jj",
+          "mj",
+          "large"
+        ]
+      },
+      {
+        "at": 1,
+        "link": [
+          "jj",
+          "mj",
+          null
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "kj",
+    "tags": [
+      "cut",
+      "undo"
+    ],
+    "file": "jump-cut.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "jump-cut-swap",
+    "name": "大跳偏心切断并撤销 · 反色",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "jj",
+          "mj",
+          "large"
+        ]
+      },
+      {
+        "at": 1,
+        "link": [
+          "jj",
+          "mj",
+          null
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "kj",
+    "tags": [
+      "cut",
+      "undo"
+    ],
+    "file": "jump-cut-swap.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "jump-merge",
+    "name": "小跳填子拉通",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "jj",
+          "lj",
+          "small"
+        ]
+      },
+      {
+        "at": 1,
+        "link": [
+          "jj",
+          "kj",
+          "solid"
+        ]
+      },
+      {
+        "at": 1,
+        "link": [
+          "kj",
+          "lj",
+          "solid"
+        ]
+      },
+      {
+        "at": 1,
+        "link": [
+          "jj",
+          "lj",
+          null
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [
+      "merge",
+      "undo"
+    ],
+    "file": "jump-merge.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "jump-merge-swap",
+    "name": "小跳填子拉通 · 反色",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "jj",
+          "lj",
+          "small"
+        ]
+      },
+      {
+        "at": 1,
+        "link": [
+          "jj",
+          "kj",
+          "solid"
+        ]
+      },
+      {
+        "at": 1,
+        "link": [
+          "kj",
+          "lj",
+          "solid"
+        ]
+      },
+      {
+        "at": 1,
+        "link": [
+          "jj",
+          "lj",
+          null
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [
+      "merge",
+      "undo"
+    ],
+    "file": "jump-merge-swap.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "atari",
+    "name": "打吃只收紧虚连",
+    "checks": [
+      {
+        "at": 0,
+        "lib": [
+          "jj",
+          2
+        ]
+      },
+      {
+        "at": 1,
+        "lib": [
+          "jj",
+          1
+        ]
+      },
+      {
+        "at": 1,
+        "link": [
+          "jj",
+          "lj",
+          "small"
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [
+      "atari",
+      "undo"
+    ],
+    "file": "atari.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "atari-swap",
+    "name": "打吃只收紧虚连 · 反色",
+    "checks": [
+      {
+        "at": 0,
+        "lib": [
+          "jj",
+          2
+        ]
+      },
+      {
+        "at": 1,
+        "lib": [
+          "jj",
+          1
+        ]
+      },
+      {
+        "at": 1,
+        "link": [
+          "jj",
+          "lj",
+          "small"
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [
+      "atari",
+      "undo"
+    ],
+    "file": "atari-swap.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "capture",
+    "name": "实连棋块提走",
+    "checks": [
+      {
+        "at": 0,
+        "lib": [
+          "jj",
+          1
+        ]
+      },
+      {
+        "at": 1,
+        "empty": [
+          "jj",
+          "kj"
+        ],
+        "captures": [
+          2,
+          2
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [
+      "capture",
+      "undo"
+    ],
+    "file": "capture.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "capture-swap",
+    "name": "实连棋块提走 · 反色",
+    "checks": [
+      {
+        "at": 0,
+        "lib": [
+          "jj",
+          1
+        ]
+      },
+      {
+        "at": 1,
+        "empty": [
+          "jj",
+          "kj"
+        ],
+        "captures": [
+          1,
+          2
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [
+      "capture",
+      "undo"
+    ],
+    "file": "capture-swap.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "captured-thread",
+    "name": "提走虚连端点",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "jj",
+          "lj",
+          "small"
+        ]
+      },
+      {
+        "at": 1,
+        "empty": [
+          "jj"
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [
+      "capture",
+      "cut",
+      "undo"
+    ],
+    "file": "captured-thread.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "captured-thread-swap",
+    "name": "提走虚连端点 · 反色",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "jj",
+          "lj",
+          "small"
+        ]
+      },
+      {
+        "at": 1,
+        "empty": [
+          "jj"
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [
+      "capture",
+      "cut",
+      "undo"
+    ],
+    "file": "captured-thread-swap.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "ko",
+    "name": "劫与禁立即回提",
+    "checks": [
+      {
+        "at": 1,
+        "empty": [
+          "bb"
+        ],
+        "reject": [
+          "W",
+          "bb"
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "bb",
+    "tags": [
+      "ko",
+      "undo"
+    ],
+    "file": "ko.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "ko-swap",
+    "name": "劫与禁立即回提 · 反色",
+    "checks": [
+      {
+        "at": 1,
+        "empty": [
+          "bb"
+        ],
+        "reject": [
+          "B",
+          "bb"
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "bb",
+    "tags": [
+      "ko",
+      "undo"
+    ],
+    "file": "ko-swap.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "suicide",
+    "name": "禁入点不改变局面",
+    "checks": [
+      {
+        "at": 0,
+        "reject": [
+          "W",
+          "jj"
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [],
+    "file": "suicide.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "suicide-swap",
+    "name": "禁入点不改变局面 · 反色",
+    "checks": [
+      {
+        "at": 0,
+        "reject": [
+          "B",
+          "jj"
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [],
+    "file": "suicide-swap.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "opponents",
+    "name": "异色邻接不连接",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "ij",
+          "kj",
+          null
+        ]
+      },
+      {
+        "at": 0,
+        "empty": [
+          "jj"
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [],
+    "file": "opponents.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "opponents-swap",
+    "name": "异色邻接不连接 · 反色",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "ij",
+          "kj",
+          null
+        ]
+      },
+      {
+        "at": 0,
+        "empty": [
+          "jj"
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [],
+    "file": "opponents-swap.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "three-around",
+    "name": "三白围空点：短斜连交汇",
+    "checks": [
+      {
+        "at": 0,
+        "empty": [
+          "jj"
+        ]
+      },
+      {
+        "at": 0,
+        "link": [
+          "ji",
+          "jk",
+          "small"
+        ]
+      },
+      {
+        "at": 0,
+        "link": [
+          "ji",
+          "kj",
+          "diagonal"
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [],
+    "file": "three-around.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "three-around-swap",
+    "name": "三白围空点：短斜连交汇 · 反色",
+    "checks": [
+      {
+        "at": 0,
+        "empty": [
+          "jj"
+        ]
+      },
+      {
+        "at": 0,
+        "link": [
+          "ji",
+          "jk",
+          "small"
+        ]
+      },
+      {
+        "at": 0,
+        "link": [
+          "ji",
+          "kj",
+          "diagonal"
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [],
+    "file": "three-around-swap.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "four-around",
+    "name": "四向虚连交叉：不推断成眼",
+    "checks": [
+      {
+        "at": 0,
+        "empty": [
+          "jj"
+        ]
+      },
+      {
+        "at": 0,
+        "lib": [
+          "ij",
+          4
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [],
+    "file": "four-around.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "four-around-swap",
+    "name": "四向虚连交叉：不推断成眼 · 反色",
+    "checks": [
+      {
+        "at": 0,
+        "empty": [
+          "jj"
+        ]
+      },
+      {
+        "at": 0,
+        "lib": [
+          "ij",
+          4
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "jj",
+    "tags": [],
+    "file": "four-around-swap.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "edge-jump",
+    "name": "边角跳连",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "aa",
+          "ca",
+          "small"
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "bb",
+    "tags": [],
+    "file": "edge-jump.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "edge-jump-swap",
+    "name": "边角跳连 · 反色",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "aa",
+          "ca",
+          "small"
+        ]
+      }
+    ],
+    "n": 19,
+    "focus": "bb",
+    "tags": [],
+    "file": "edge-jump-swap.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "user-nine",
+    "name": "用户现场：三白围F2",
+    "checks": [
+      {
+        "at": 0,
+        "empty": [
+          "fh"
+        ]
+      },
+      {
+        "at": 0,
+        "link": [
+          "fg",
+          "eh",
+          "diagonal"
+        ],
+        "threat": true
+      },
+      {
+        "at": 0,
+        "link": [
+          "fg",
+          "gh",
+          "diagonal"
+        ],
+        "threat": true
+      },
+      {
+        "at": 0,
+        "link": [
+          "eh",
+          "gh",
+          "small"
+        ]
+      }
+    ],
+    "n": 9,
+    "focus": "fg",
+    "tags": [],
+    "file": "user-nine.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "user-nine-swap",
+    "name": "用户现场：三白围F2 · 反色",
+    "checks": [
+      {
+        "at": 0,
+        "empty": [
+          "fh"
+        ]
+      },
+      {
+        "at": 0,
+        "link": [
+          "fg",
+          "eh",
+          "diagonal"
+        ],
+        "threat": true
+      },
+      {
+        "at": 0,
+        "link": [
+          "fg",
+          "gh",
+          "diagonal"
+        ],
+        "threat": true
+      },
+      {
+        "at": 0,
+        "link": [
+          "eh",
+          "gh",
+          "small"
+        ]
+      }
+    ],
+    "n": 9,
+    "focus": "fg",
+    "tags": [],
+    "file": "user-nine-swap.sgf",
+    "source": "authored regression fixture (not a professional game)"
+  },
+  {
+    "id": "route-reveal",
+    "name": "斜连受威胁时恢复跳连",
+    "file": "route-reveal.sgf",
+    "n": 19,
+    "focus": "jj",
+    "tags": [
+      "presentation",
+      "undo"
+    ],
+    "source": "authored regression fixture (not a professional game)",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "ji",
+          "jk",
+          "small"
+        ]
+      },
+      {
+        "at": 1,
+        "link": [
+          "ji",
+          "jk",
+          "small"
+        ]
+      },
+      {
+        "at": 1,
+        "link": [
+          "ji",
+          "kj",
+          "diagonal"
+        ],
+        "threat": true
+      }
+    ]
+  },
+  {
+    "id": "route-reveal-swap",
+    "name": "斜连受威胁时恢复跳连 · 反色",
+    "file": "route-reveal-swap.sgf",
+    "n": 19,
+    "focus": "jj",
+    "tags": [
+      "presentation",
+      "undo"
+    ],
+    "source": "authored regression fixture (not a professional game)",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "ji",
+          "jk",
+          "small"
+        ]
+      },
+      {
+        "at": 1,
+        "link": [
+          "ji",
+          "jk",
+          "small"
+        ]
+      },
+      {
+        "at": 1,
+        "link": [
+          "ji",
+          "kj",
+          "diagonal"
+        ],
+        "threat": true
+      }
+    ]
+  },
+  {
+    "id": "crowded-hub",
+    "name": "多向汇流：受压斜连与跳连同根",
+    "file": "crowded-hub.sgf",
+    "n": 19,
+    "focus": "jj",
+    "tags": [
+      "junction"
+    ],
+    "source": "authored regression fixture (not a professional game)",
+    "checks": [
+      {
+        "at": 0,
+        "empty": [
+          "ij",
+          "kj"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "crowded-hub-swap",
+    "name": "多向汇流：受压斜连与跳连同根 · 反色",
+    "file": "crowded-hub-swap.sgf",
+    "n": 19,
+    "focus": "jj",
+    "tags": [
+      "junction"
+    ],
+    "source": "authored regression fixture (not a professional game)",
+    "checks": [
+      {
+        "at": 0,
+        "empty": [
+          "ij",
+          "kj"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "opposed-crossing",
+    "name": "异色交叉：默认退隐、关注展开",
+    "file": "opposed-crossing.sgf",
+    "n": 19,
+    "focus": "jj",
+    "tags": [
+      "crossing",
+      "opposed"
+    ],
+    "source": "authored regression fixture (not a professional game)",
+    "checks": [
+      {
+        "at": 0,
+        "empty": [
+          "jj"
+        ]
+      },
+      {
+        "at": 0,
+        "link": [
+          "ji",
+          "jk",
+          "small"
+        ],
+        "threat": false
+      },
+      {
+        "at": 0,
+        "link": [
+          "ij",
+          "kj",
+          "small"
+        ],
+        "threat": false
+      },
+      {
+        "at": 0,
+        "lib": [
+          "ji",
+          4
+        ]
+      },
+      {
+        "at": 0,
+        "lib": [
+          "ij",
+          4
+        ]
+      }
+    ]
+  },
+  {
+    "id": "opposed-crossing-swap",
+    "name": "异色交叉：默认退隐、关注展开 · 反色",
+    "file": "opposed-crossing-swap.sgf",
+    "n": 19,
+    "focus": "jj",
+    "tags": [
+      "crossing",
+      "opposed"
+    ],
+    "source": "authored regression fixture (not a professional game)",
+    "checks": [
+      {
+        "at": 0,
+        "empty": [
+          "jj"
+        ]
+      },
+      {
+        "at": 0,
+        "link": [
+          "ji",
+          "jk",
+          "small"
+        ],
+        "threat": false
+      },
+      {
+        "at": 0,
+        "link": [
+          "ij",
+          "kj",
+          "small"
+        ],
+        "threat": false
+      },
+      {
+        "at": 0,
+        "lib": [
+          "ji",
+          4
+        ]
+      },
+      {
+        "at": 0,
+        "lib": [
+          "ij",
+          4
+        ]
+      }
+    ]
+  },
+  {
+    "id": "knight",
+    "name": "小飞：默认退隐、关注展开",
+    "file": "knight.sgf",
+    "n": 19,
+    "focus": "kj",
+    "tags": [
+      "knight"
+    ],
+    "source": "authored regression fixture (not a professional game)",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "jj",
+          "lk",
+          "knight"
+        ],
+        "threat": false
+      },
+      {
+        "at": 0,
+        "lib": [
+          "jj",
+          4
+        ]
+      },
+      {
+        "at": 0,
+        "lib": [
+          "lk",
+          4
+        ]
+      },
+      {
+        "at": 0,
+        "empty": [
+          "kj",
+          "lj",
+          "jk",
+          "kk"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "knight-intrusion",
+    "name": "小飞：单点侵入仍有潜在通路",
+    "file": "knight-intrusion.sgf",
+    "n": 19,
+    "focus": "kj",
+    "tags": [
+      "knight",
+      "pressure"
+    ],
+    "source": "authored regression fixture (not a professional game)",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "jj",
+          "lk",
+          "knight"
+        ],
+        "threat": true
+      },
+      {
+        "at": 0,
+        "lib": [
+          "jj",
+          4
+        ]
+      },
+      {
+        "at": 0,
+        "lib": [
+          "lk",
+          3
+        ]
+      },
+      {
+        "at": 0,
+        "empty": [
+          "kj",
+          "jk",
+          "kk"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "knight-local-block",
+    "name": "小飞：局部通路封断",
+    "file": "knight-local-block.sgf",
+    "n": 19,
+    "focus": "kj",
+    "tags": [
+      "knight",
+      "cut",
+      "transition"
+    ],
+    "source": "authored regression fixture (not a professional game)",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "jj",
+          "lk",
+          "knight"
+        ],
+        "threat": true
+      },
+      {
+        "at": 0,
+        "empty": [
+          "kk"
+        ]
+      },
+      {
+        "at": 1,
+        "link": [
+          "jj",
+          "lk",
+          null
+        ]
+      },
+      {
+        "at": 1,
+        "lib": [
+          "jj",
+          3
+        ]
+      },
+      {
+        "at": 1,
+        "lib": [
+          "lk",
+          3
+        ]
+      }
+    ]
+  },
+  {
+    "id": "knight-swap",
+    "name": "小飞：默认退隐、关注展开 · 反色",
+    "file": "knight-swap.sgf",
+    "n": 19,
+    "focus": "kj",
+    "tags": [
+      "knight"
+    ],
+    "source": "authored regression fixture (not a professional game)",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "jj",
+          "lk",
+          "knight"
+        ],
+        "threat": false
+      },
+      {
+        "at": 0,
+        "lib": [
+          "jj",
+          4
+        ]
+      },
+      {
+        "at": 0,
+        "lib": [
+          "lk",
+          4
+        ]
+      },
+      {
+        "at": 0,
+        "empty": [
+          "kj",
+          "lj",
+          "jk",
+          "kk"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "knight-intrusion-swap",
+    "name": "小飞：单点侵入仍有潜在通路 · 反色",
+    "file": "knight-intrusion-swap.sgf",
+    "n": 19,
+    "focus": "kj",
+    "tags": [
+      "knight",
+      "pressure"
+    ],
+    "source": "authored regression fixture (not a professional game)",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "jj",
+          "lk",
+          "knight"
+        ],
+        "threat": true
+      },
+      {
+        "at": 0,
+        "lib": [
+          "jj",
+          4
+        ]
+      },
+      {
+        "at": 0,
+        "lib": [
+          "lk",
+          3
+        ]
+      },
+      {
+        "at": 0,
+        "empty": [
+          "kj",
+          "jk",
+          "kk"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "knight-local-block-swap",
+    "name": "小飞：局部通路封断 · 反色",
+    "file": "knight-local-block-swap.sgf",
+    "n": 19,
+    "focus": "kj",
+    "tags": [
+      "knight",
+      "cut",
+      "transition"
+    ],
+    "source": "authored regression fixture (not a professional game)",
+    "checks": [
+      {
+        "at": 0,
+        "link": [
+          "jj",
+          "lk",
+          "knight"
+        ],
+        "threat": true
+      },
+      {
+        "at": 0,
+        "empty": [
+          "kk"
+        ]
+      },
+      {
+        "at": 1,
+        "link": [
+          "jj",
+          "lk",
+          null
+        ]
+      },
+      {
+        "at": 1,
+        "lib": [
+          "jj",
+          3
+        ]
+      },
+      {
+        "at": 1,
+        "lib": [
+          "lk",
+          3
+        ]
+      }
+    ]
+  }
+]
