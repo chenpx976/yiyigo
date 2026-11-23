@@ -80,3 +80,41 @@ for (let file of ["cho", "gu", "lee"])
     }
     console.log(file, k.moves.length, JSON.stringify(metrics));
   });
+
+test("diagonals keep separate liberties and show cutting pressure", () => {
+  const g = new Go();
+  g.board[10] = g.board[20] = 1;
+  assert.equal(g.group(10).stones.size, 1);
+  assert.equal(g.group(10).liberties.size, 4);
+  assert.equal(links(g)[0].kind, "diagonal");
+  assert.equal(links(g)[0].threatened, false);
+  g.board[11] = 2;
+  assert.equal(links(g)[0].threatened, true);
+  g.board[19] = 2;
+  assert.equal(links(g).filter((l) => l.color === 1).length, 0);
+});
+test("capture preview is legal, deduplicated and does not mutate live game", async () => {
+  const { analyzeMove } = await import("../dist/engine.js");
+  let g = new Go();
+  g.board[10] = g.board[11] = 2;
+  for (let p of [1, 2, 9, 12, 19]) g.board[p] = 1;
+  let before = JSON.stringify(g);
+  let preview = analyzeMove(g, 20);
+  assert.deepEqual(preview.captured, [10, 11]);
+  assert.equal(preview.error, null);
+  assert.equal(JSON.stringify(g), before);
+  assert.equal(g.play(20), null);
+  assert.equal(g.captures[1], preview.captured.length);
+});
+test("atari preview identifies targets and self-atari accurately", async () => {
+  const { analyzeMove } = await import("../dist/engine.js");
+  let g = new Go();
+  g.board[10] = 2;
+  g.board[1] = g.board[9] = 1;
+  assert.deepEqual(analyzeMove(g, 11).atari, [10]);
+  g = new Go();
+  g.board[1] = g.board[9] = g.board[11] = 2;
+  assert.equal(analyzeMove(g, 10).liberties, 1);
+  g.board[19] = 2;
+  assert.match(analyzeMove(g, 10).error, /禁入/);
+});

@@ -444,3 +444,20 @@ button:disabled {
   opacity: 0;
   cursor: pointer;
 }
+
+.last-liberty {
+  animation: danger-breath 1.4s ease-in-out infinite;
+}
+.capture-echo {
+  animation: capture-fade 0.7s ease-out forwards;
+}
+@keyframes danger-breath {
+  50% {
+    opacity: 0.55;
+  }
+}
+@keyframes capture-fade {
+  to {
+    opacity: 0;
+  }
+}

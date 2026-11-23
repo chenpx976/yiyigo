@@ -1,4 +1,4 @@
-import { Go, parseSGF, links } from "./engine.js";
+import { Go, parseSGF, links, analyzeMove } from "./engine.js";
 const $ = (id) => document.getElementById(id),
   svg = $("board"),
   NS = "http://www.w3.org/2000/svg";
@@ -178,7 +178,7 @@ function draw() {
       solid = l.kind === "solid";
     el("path", {
       d: `M${x} ${y} Q${(x + a) / 2 + (solid ? 0 : s * 0.08)} ${(y + b) / 2 - (solid ? 0 : s * 0.08)} ${a} ${b}`,
-      stroke: l.color === 1 ? "#233238" : "#e9eee2",
+      stroke: l.threatened ? "#ae6954" : l.color === 1 ? "#233238" : "#e9eee2",
       "stroke-width": solid ? s * 0.48 : s * 0.055,
       "stroke-linecap": "round",
       "stroke-dasharray": solid
@@ -187,11 +187,56 @@ function draw() {
           ? `${s * 0.08} ${s * 0.16}`
           : `${s * 0.13} ${s * 0.11}`,
       fill: "none",
-      opacity: solid ? 1 : l.kind === "large" ? 0.32 : 0.56,
+      opacity: solid
+        ? 1
+        : l.threatened
+          ? 0.42
+          : l.kind === "large"
+            ? 0.32
+            : 0.56,
       class: solid ? "" : "ghostlink",
       "pointer-events": "none",
     });
   }
+  // Last liberties remain visible for both players, not only the selected chain.
+  const marked = new Set();
+  for (const group of groups)
+    if (group.liberties.size === 1) {
+      const p = [...group.liberties][0],
+        [x, y] = xy(p);
+      for (const q of game.neighbors(p))
+        if (group.stones.has(q)) {
+          const [a, b] = xy(q);
+          el("path", {
+            d: `M${a} ${b}L${x} ${y}`,
+            stroke: "#c36750",
+            "stroke-width": s * 0.07,
+            "stroke-dasharray": `${s * 0.07} ${s * 0.06}`,
+            class: "atari",
+            "pointer-events": "none",
+          });
+        }
+      if (marked.has(p)) continue;
+      marked.add(p);
+      const z = s * 0.19;
+      el("path", {
+        d: `M${x} ${y - z}L${x + z} ${y}L${x} ${y + z}L${x - z} ${y}Z`,
+        fill: "#e6bd99",
+        stroke: "#b6523f",
+        "stroke-width": 2,
+        class: "last-liberty",
+        "pointer-events": "none",
+      });
+      const label = el("text", {
+        x,
+        y: y + s * 0.045,
+        "text-anchor": "middle",
+        "font-size": s * 0.14,
+        fill: "#842f28",
+        "pointer-events": "none",
+      });
+      label.textContent = "1";
+    }
   for (let g of groups) {
     let danger = g.liberties.size === 1;
     for (let i of g.stones) {
@@ -255,6 +300,7 @@ function draw() {
       "pointer-events": "none",
     });
   }
+  el("g", { id: "move-preview", "pointer-events": "none" });
   for (let i = 0; i < n * n; i++) {
     let [x, y] = xy(i);
     let hit = el("rect", {
@@ -269,6 +315,10 @@ function draw() {
     });
     hit.addEventListener("click", () => activate(i));
     hit.addEventListener("pointerenter", () => inspect(i));
+    hit.addEventListener("focus", () => inspect(i));
+    hit.addEventListener("pointerleave", () =>
+      $("move-preview")?.replaceChildren(),
+    );
     hit.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
@@ -306,7 +356,79 @@ function draw() {
   }
 }
 function inspect(i) {
-  if (!game.board[i]) return;
+  const overlay = $("move-preview");
+  overlay?.replaceChildren();
+  if (!game.board[i]) {
+    if (review || game.ended) return;
+    const result = analyzeMove(game, i);
+    const s = 660 / (game.n - 1),
+      xy = (p) => [50 + (p % game.n) * s, 50 + Math.floor(p / game.n) * s];
+    const [x, y] = xy(i);
+    el(
+      "circle",
+      {
+        cx: x,
+        cy: y,
+        r: s * 0.39,
+        fill: game.turn === 1 ? "#26363b" : "#fffced",
+        opacity: 0.28,
+        stroke: result.error ? "#b35442" : "#5b9279",
+        "stroke-width": 2,
+      },
+      overlay,
+    );
+    for (const p of result.captured) {
+      const [a, b] = xy(p),
+        z = s * 0.19;
+      el(
+        "circle",
+        { cx: a, cy: b, r: s * 0.44, fill: "#dc9b7c", opacity: 0.55 },
+        overlay,
+      );
+      el(
+        "path",
+        {
+          d: `M${a - z} ${b - z}L${a + z} ${b + z}M${a + z} ${b - z}L${a - z} ${b + z}`,
+          stroke: "#842f28",
+          "stroke-width": 2.5,
+        },
+        overlay,
+      );
+    }
+    for (const p of result.atari) {
+      const [a, b] = xy(p);
+      el(
+        "circle",
+        {
+          cx: a,
+          cy: b,
+          r: s * 0.47,
+          fill: "none",
+          stroke: "#c77950",
+          "stroke-width": 2,
+          "stroke-dasharray": "3 3",
+        },
+        overlay,
+      );
+    }
+    $("group-title").textContent = result.error
+      ? "这里暂时不能落子"
+      : result.captured.length
+        ? `这一手，提走 ${result.captured.length} 子`
+        : result.atari.length
+          ? `这一手，打吃 ${result.atari.length} 子`
+          : `落子后，这块棋有 ${result.liberties} 口气`;
+    $("group-text").textContent =
+      result.error ||
+      (result.captured.length
+        ? "叉号标出的棋子将失去最后一口气，整块从棋盘移走。"
+        : result.atari.length
+          ? "虚圈标出的对方棋子将只剩一口气。对方仍可能逃出、连接或反提。"
+          : result.liberties === 1
+            ? "注意：落下后自己只剩一口气，可能被对方提走。"
+            : "这是这一手落下后的气数预览，不代表已经做活。");
+    return;
+  }
   let g = game.group(i);
   $("group-title").textContent =
     `${game.board[i] === 1 ? "黑" : "白"}棋 · ${g.stones.size} 子相连 · ${g.liberties.size} 口气`;
@@ -330,6 +452,7 @@ function activate(i) {
   move(i);
 }
 function move(i) {
+  const before = game.board.slice();
   let err = game.play(i);
   if (err) {
     msg(err);
@@ -339,6 +462,25 @@ function move(i) {
   ping();
   draw();
   persist();
+  const taken = before.flatMap((c, p) => (c && !game.board[p] ? [p] : []));
+  if (taken.length) {
+    const layer = el("g", { class: "capture-echo", "pointer-events": "none" }),
+      s = 660 / (game.n - 1);
+    for (const p of taken)
+      el(
+        "circle",
+        {
+          cx: 50 + (p % game.n) * s,
+          cy: 50 + Math.floor(p / game.n) * s,
+          r: s * 0.42,
+          fill: before[p] === 1 ? "#26363b" : "#fffced",
+          stroke: "#c57657",
+          "stroke-width": 2,
+        },
+        layer,
+      );
+    setTimeout(() => layer.remove(), 700);
+  }
   if (game.ended) {
     let score = game.score(7.5);
     msg(
@@ -348,7 +490,9 @@ function move(i) {
     msg(
       i === null
         ? "已停一手；双方连续停着后结束。"
-        : "棋子已落下，看看彼此的气与联系如何变化。",
+        : taken.length
+          ? `提走 ${taken.length} 子。空出来的交叉点，重新成为气。`
+          : "棋子已落下，菱形标记是被打吃棋块的最后一口气。",
     );
     scheduleBot();
   }

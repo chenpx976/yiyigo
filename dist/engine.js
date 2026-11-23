@@ -229,12 +229,50 @@ export function links(g) {
             )
               continue;
           }
-          if (
-            kind === "diagonal" &&
-            [i + dx, i + dy * g.n].some((p) => g.board[p] === 3 - g.board[i])
-          )
-            continue;
-          result.push({ i, j, kind, color: g.board[i] });
+          const cuts =
+            kind === "diagonal"
+              ? [i + dx, i + dy * g.n].filter(
+                  (p) => g.board[p] === 3 - g.board[i],
+                ).length
+              : 0;
+          if (cuts === 2) continue;
+          result.push({
+            i,
+            j,
+            kind,
+            color: g.board[i],
+            threatened: cuts === 1,
+          });
         }
   return result;
+}
+
+// Pure hypothetical move analysis, including ko and suicide legality.
+export function analyzeMove(game, i) {
+  const copy = new Go(game.n);
+  copy.board = game.board.slice();
+  copy.turn = game.turn;
+  copy.history = game.history.slice();
+  copy.captures = game.captures.slice();
+  copy.passes = game.passes;
+  copy.ended = game.ended;
+  const error = copy.play(i);
+  if (error) return { error, captured: [], atari: [], liberties: 0 };
+  const captured = game.board.flatMap((c, p) =>
+    c && !copy.board[p] ? [p] : [],
+  );
+  const atari = [],
+    seen = new Set();
+  for (const p of copy.neighbors(i)) {
+    if (copy.board[p] !== 3 - game.turn || seen.has(p)) continue;
+    const group = copy.group(p);
+    group.stones.forEach((q) => seen.add(q));
+    if (group.liberties.size === 1) atari.push(...group.stones);
+  }
+  return {
+    error: null,
+    captured,
+    atari,
+    liberties: copy.group(i).liberties.size,
+  };
 }
