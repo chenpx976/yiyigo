@@ -1,0 +1,32 @@
+<!doctype html><html lang="zh"><meta charset="utf-8"><title>三维曲面开发检查</title>
+<style>body{margin:0;background:#172b29;color:#eee8d8;font:16px system-ui;padding:28px}h1{font-size:22px}p{color:#b4c2bb}main{display:flex;gap:20px}section{width:48%}canvas{width:100%;border-radius:8px}h2{font-size:16px;font-weight:500}</style>
+<h1>同一份三维曲面 · 仅供开发检查</h1><p>上：白棋实连，下：黑棋小跳。颜色、截面和阴影来自同一实现；侧视只用于核对厚度与下垂，游戏仍保持正俯视。</p>
+<main><section><h2>游戏视角：正俯视</h2><div id="top"></div></section><section><h2>检查视角：斜俯视</h2><div id="side"></div></section></main>
+<script type="module">
+import * as THREE from 'three';
+import {Go} from '/src/engine.ts';
+import {createLivingSurface} from '/src/living-stones.ts';
+const game=new Go(19);
+const whiteThreads=new URLSearchParams(location.search).has("white");
+if(whiteThreads)document.querySelector("p").textContent="上：白棋实连，下：白棋小跳。双视角核对贴合、收腰和下垂；游戏保持正俯视。";
+for(const [x,y,c] of [[8,8,2],[9,8,2],[8,10,1],[10,10,1]])game.board[y*19+x]=whiteThreads?2:c;
+if(new URLSearchParams(location.search).has('three')){
+ game.board.fill(0);for(const [x,y] of [[9,8],[10,9],[9,10]])game.board[y*19+x]=2;
+ document.querySelector('p').textContent='复现：三颗白棋围绕同一空点，检查虚连重叠和空点可见性。';
+}
+for(const [id,angle] of [['top',0],['side',.8]]){
+ const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(2);renderer.setSize(560,430);
+ renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;
+ document.getElementById(id).append(renderer.domElement);
+ const scene=new THREE.Scene();scene.background=new THREE.Color('#293c36');
+ const camera=new THREE.OrthographicCamera(-95,95,73,-73,1,2000);camera.up.set(0,1,0);
+ camera.position.set(380,-380-Math.sin(angle)*600,Math.cos(angle)*600);camera.lookAt(380,-380,0);
+ scene.add(new THREE.HemisphereLight(0xffffff,0x444444,1.1));
+ const light=new THREE.DirectionalLight(0xfffaf2,1.9);light.position.set(200,-200,600);light.target.position.set(380,-380,0);light.castShadow=true;
+ Object.assign(light.shadow.camera,{left:-160,right:160,top:160,bottom:-160,near:10,far:1500});light.shadow.mapSize.set(1024,1024);light.shadow.bias=-.0001;
+ scene.add(light,light.target);
+ const board=new THREE.Mesh(new THREE.PlaneGeometry(240,210),new THREE.MeshStandardMaterial({color:0xd7b780,roughness:.7}));board.position.set(380,-380,0);board.receiveShadow=true;scene.add(board);
+ const surface=createLivingSurface(game,[],false,0,true,new Map(),new Map());scene.add(surface.mesh);
+ function frame(t){surface.setTime(t/1000);renderer.render(scene,camera);requestAnimationFrame(frame)}requestAnimationFrame(frame);
+}
+</script></html>

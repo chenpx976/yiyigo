@@ -1,9 +1,29 @@
 {
   "name": "yiyigo",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
-    "start": "python3 -m http.server 4173 --directory dist",
-    "test": "node --test tests/*.test.js"
+    "dev": "vite --host 127.0.0.1 --port 4173 --strictPort",
+    "start": "npm run dev",
+    "typecheck": "tsc --noEmit",
+    "build": "npm run typecheck && vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 4174 --strictPort",
+    "test": "tsx --test tests/*.test.ts",
+    "check": "npm run typecheck && npm test && vite build",
+    "test:qi-mai": "node --import tsx --test tests/qi-mai-corpus.test.ts tests/case-atlas.test.ts tests/visual-atlas.test.ts tests/whole-connection.test.ts tests/surface-reset.test.ts tests/stone-body.test.ts tests/thread-route.test.ts"
+  },
+  "dependencies": {
+    "three": "0.187.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/three": "0.187.0",
+    "tsx": "^4.20.0",
+    "typescript": "5.9.3",
+    "vite": "8.3.8"
   }
 }
