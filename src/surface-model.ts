@@ -1,14 +1,16 @@
-import { Go, links } from "./engine";
-import type { Cell } from "./engine";
-import { groups } from "./position";
-import { updateConnections, connectionDuration } from "./connection-state";
-import type { ConnectionState, ConnectionCrossing } from "./connection-state";
+import type { Go, Cell } from "./engine";
+import { updateConnections, connectionDuration, analyzeConnections } from "./connection-state";
+import type { ConnectionState, ConnectionCrossing, ConnectionAnalysis } from "./connection-state";
 import { updateSurfaces, morphDuration } from "./surface-transition";
 import type { SurfaceTransition, SurfaceTarget } from "./surface-transition";
 export interface SurfacePrimitive {
   data: number[];
   bounds: [number, number, number, number];
   crossings?: ConnectionCrossing[];
+}
+export interface SurfaceModel {
+  primitives: SurfacePrimitive[];
+  bins: number[][];
 }
 export type SurfaceUpdateMode = "reset" | "retarget" | "sample";
 
@@ -37,12 +39,12 @@ function pruneRetiredStates(
   time: number,
 ) {
   for (const [key,state] of surfaces)
-    if (state.to === 0 && time-state.start >= morphDuration) surfaces.delete(key);
+    if (state.to === 0 && time >= state.start + morphDuration) surfaces.delete(key);
   for (const [key,state] of connections) {
-    if (!activeConnections.has(key) && state.to[0] === 0 && time-state.start >= connectionDuration)
+    if (!activeConnections.has(key) && state.to[0] === 0 && time >= state.start + connectionDuration)
       connections.delete(key);
-    else if (state.crossings?.some(c => c.to === 0 && time-c.start >= connectionDuration))
-      state.crossings = state.crossings.filter(c => c.to !== 0 || time-c.start < connectionDuration);
+    else if (state.crossings?.some(c => c.to === 0 && time >= c.start + connectionDuration))
+      state.crossings = state.crossings.filter(c => c.to !== 0 || time < c.start + connectionDuration);
   }
 }
 
@@ -56,13 +58,11 @@ export function surfaceModel(
   connections: Map<string, ConnectionState>,
   surfaces: Map<string, SurfaceTransition> = new Map(),
   mode: SurfaceUpdateMode = surfaceUpdateMode(game, surfaces, animate, motion),
-) {
+  analysis: ConnectionAnalysis = analyzeConnections(game),
+): SurfaceModel {
   const n = game.n,
     primitives: SurfacePrimitive[] = [];
-  const members = new Map<number, { lib: number; seed: number }>();
-  for (const group of groups(game))
-    for (const p of group.stones)
-      members.set(p, { lib: group.liberties.size, seed: group.anchor * 0.23 });
+  const { members, currentLinks } = analysis;
   const add = (
     i: number,
     j: number,
@@ -115,7 +115,6 @@ export function surfaceModel(
       targets.push({ i, j: i, type: 0, color, lib: m.lib, seed: m.seed });
     }
   });
-  const currentLinks = links(game);
   for (const link of currentLinks)
     if (link.kind === "solid") {
       const m = members.get(link.i)!;
@@ -132,13 +131,13 @@ export function surfaceModel(
     surfaces.clear();
     connections.clear();
     updateSurfaces(targets, surfaces, time, false);
-    updateConnections(game, connections, time, false, selected);
+    updateConnections(game, connections, time, false, selected, analysis);
   } else if (mode === "retarget") {
     updateSurfaces(targets, surfaces, time, true);
-    updateConnections(game, connections, time, true, selected);
+    updateConnections(game, connections, time, true, selected, analysis);
   } else {
     // Focus changes only connection visibility; unchanged targets keep their clocks.
-    updateConnections(game, connections, time, true, selected);
+    updateConnections(game, connections, time, true, selected, analysis);
     pruneRetiredStates(
       connections,
       surfaces,
@@ -146,7 +145,9 @@ export function surfaceModel(
       time,
     );
   }
+  const visibleEndpoints = new Set<number>();
   for (const state of surfaces.values()) {
+    if (state.type === 0) visibleEndpoints.add(state.color * n * n + state.i);
     add(
       state.i,
       state.j,
@@ -162,10 +163,7 @@ export function surfaceModel(
   for (const state of connections.values()) {
     // Retiring strands stay attached while their endpoints shrink in this same surface.
     const endpointVisible = (p: number) =>
-      game.board[p] === state.link.color ||
-      [...surfaces.values()].some(
-        (s) => s.type === 0 && s.i === p && s.color === state.link.color,
-      );
+      game.board[p] === state.link.color || visibleEndpoints.has(state.link.color * n * n + p);
     if (!endpointVisible(state.link.i) || !endpointVisible(state.link.j))
       continue;
     const { i, j, color } = state.link;
@@ -189,15 +187,15 @@ export function surfaceModel(
   // Each edge owns its entire connection volume and keeps its full bounds.
   // Endpoint lifecycle records are globally addressable; body bounds only need
   // to cover the fixed stone. No half-edge support or smooth-union halo remains.
-  const bins = Array.from({ length: n * n }, (_, i) =>
-    primitives.flatMap((p, k) => {
-      const x = i % n,
-        y = Math.floor(i / n),
-        [l, t, r, b] = p.bounds;
-      return l <= x + 0.5 && r >= x - 0.5 && t <= y + 0.5 && b >= y - 0.5
-        ? [k]
-        : [];
-    }),
-  );
+  const bins: number[][] = Array.from({ length: n * n }, () => []);
+  for (let k = 0; k < primitives.length; k++) {
+    const [l, t, r, b] = primitives[k].bounds;
+    const left = Math.max(0, Math.ceil(l - 0.5));
+    const right = Math.min(n - 1, Math.floor(r + 0.5));
+    const top = Math.max(0, Math.ceil(t - 0.5));
+    const bottom = Math.min(n - 1, Math.floor(b + 0.5));
+    for (let y = top; y <= bottom; y++)
+      for (let x = left; x <= right; x++) bins[y * n + x].push(k);
+  }
   return { primitives, bins };
 }

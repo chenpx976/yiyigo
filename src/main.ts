@@ -1,8 +1,9 @@
 import "./style.css";
-import { Go, analyzeMove, parseSGF, gameFromKifu } from "./engine";
+import { Go, analyzeMove, gameFromKifu } from "./engine";
 import type { Kifu } from "./engine";
 import { BoardView } from "./board";
 import { coord, groups, localSituation } from "./position";
+import { RecordLoader, restoreSavedGame, serializeSGF } from "./record-io";
 const get = <T extends HTMLElement = HTMLElement>(id: string) => {
   const e = document.getElementById(id);
   if (!e) throw Error(`Missing #${id}`);
@@ -42,10 +43,15 @@ let game = new Go(9),
 let auto: ReturnType<typeof setInterval> | null = null,
   worker: Worker | null = null,
   requestId = 0,
-  loadId = 0,
+  recordLoader = new RecordLoader(),
   sound = false,
   audio: AudioContext | null = null;
-const msg = (s: string) => (get("status").textContent = s);
+let saveFailed = false;
+let statusText = get("status").textContent || "";
+const msg = (s: string) => {
+  statusText = s;
+  get("status").textContent = s + (saveFailed ? " 浏览器存储不可用；可导出 SGF 保存本局。" : "");
+};
 const board = new BoardView(get("board"), activate, inspect);
 function cancelBot() {
   requestId++;
@@ -62,13 +68,15 @@ function persist() {
     localStorage.setItem(
       "yiyigo-v1",
       JSON.stringify({
-        n: game.n,
-        moves: game.history.map((h) => ({ i: h.move, color: h.color })),
+        sgf: serializeSGF(game),
+        opponent: opponent.value,
       }),
     );
+    saveFailed = false;
   } catch {
-    msg("浏览器存储不可用；可导出 SGF 保存本局。");
+    saveFailed = true;
   }
+  msg(statusText);
 }
 function ping() {
   if (!sound) return;
@@ -219,29 +227,35 @@ function scheduleBot() {
   if (review || game.ended || opponent.value !== "bot" || game.turn !== 2)
     return;
   const id = requestId;
-  worker = new Worker(new URL("./bot.worker.ts", import.meta.url), {
-    type: "module",
-  });
+  function failBot(message: string) {
+    if (id !== requestId || review) return;
+    cancelBot();
+    opponent.value = "human";
+    update();
+    persist();
+    msg(message);
+  }
+  try {
+    worker = new Worker(new URL("./bot.worker.ts", import.meta.url), {
+      type: "module",
+    });
+  } catch {
+    failBot("浏览器未能启动陪练，已切换双人。");
+    return;
+  }
   msg("小弈正在考虑救急、提子与局部连接……");
   worker.onmessage = (
     event: MessageEvent<{ id: number; move: number | null; error?: string }>,
   ) => {
-    if (event.data.id !== requestId || review) return;
-    cancelBot();
+    if (id !== requestId || event.data.id !== id || review) return;
     if (event.data.error) {
-      opponent.value = "human";
-      update();
-      msg("陪练计算失败，已切换双人，可继续落子。");
+      failBot("陪练计算失败，已切换双人，可继续落子。");
       return;
     }
+    cancelBot();
     move(event.data.move);
   };
-  worker.onerror = () => {
-    cancelBot();
-    opponent.value = "human";
-    update();
-    msg("浏览器未能启动陪练，已切换双人。");
-  };
+  worker.onerror = () => failBot("浏览器未能启动陪练，已切换双人。");
   worker.postMessage({
     id,
     position: {
@@ -256,6 +270,7 @@ function scheduleBot() {
   });
 }
 function newGame() {
+  if (review) return;
   if (game.history.length && !confirm("开始新局会清空当前对局，是否继续？")) {
     size.value = String(game.n);
     return;
@@ -271,10 +286,13 @@ function newGame() {
 get("new").onclick = newGame;
 size.onchange = newGame;
 opponent.onchange = () => {
+  if (review) return;
+  persist();
   update();
   scheduleBot();
 };
 get("undo").onclick = () => {
+  if (review) return;
   cancelBot();
   game.undo();
   if (opponent.value === "bot" && game.turn === 2) game.undo();
@@ -284,54 +302,63 @@ get("undo").onclick = () => {
   msg("已悔棋。");
 };
 get("pass").onclick = () => {
-  if (opponent.value === "bot" && game.turn === 2) return;
+  if (review || (opponent.value === "bot" && game.turn === 2)) return;
   move(null);
 };
-function validate(k: Kifu) {
-  const g = gameFromKifu(k);
-  for (const m of k.moves) {
-    const error = g.play(m.i, m.color);
-    if (error) throw Error(`棋谱第 ${g.history.length + 1} 手：${error}`);
-  }
-}
 function seek(v: number, animate = false) {
-  if (!kifu) return;
-  cursor = Math.max(0, Math.min(v, kifu.moves.length));
-  game = gameFromKifu(kifu);
-  for (const m of kifu.moves.slice(0, cursor)) game.play(m.i, m.color);
+  if (!review || !kifu) return;
+  const target = Math.max(0, Math.min(v, kifu.moves.length));
+  while (cursor > target) {
+    game.undo();
+    cursor--;
+  }
+  while (cursor < target) {
+    const move = kifu.moves[cursor];
+    game.play(move.i, move.color);
+    cursor++;
+  }
   selected = -1;
   update(animate);
 }
 async function loadRecord() {
-  const id = ++loadId;
+  if (!review) return;
   stop();
-  try {
-    const record = records[Number(games.value)],
-      response = await fetch(
+  const record = records[Number(games.value)];
+  await recordLoader.load(
+    async (signal) => {
+      const response = await fetch(
         `${import.meta.env.BASE_URL}games/${record.file}.sgf`,
+        { signal },
       );
-    if (!response.ok) throw Error("棋谱读取失败");
-    const parsed = parseSGF(await response.text());
-    validate(parsed);
-    if (id !== loadId || !review) return;
-    kifu = parsed;
-    get("game-meta").textContent =
-      `${record.event} · ${parsed.root.DT?.[0] || ""} · ${parsed.root.RE?.[0] || ""}`;
-    get<HTMLAnchorElement>("source").href =
-      `https://github.com/gogameguru/commented-go-games/blob/master/${record.path}`;
-    get("source").hidden = false;
-    timeline.max = String(kifu.moves.length);
-    seek(0);
-    msg("同样的气、势与连接，在真实对局里自然呈现。");
-  } catch (error) {
-    msg(String(error));
-  }
+      if (!response.ok) throw Error("棋谱读取失败");
+      return response.text();
+    },
+    (parsed) => {
+      kifu = parsed;
+      game = gameFromKifu(parsed);
+      cursor = 0;
+      get("game-meta").textContent =
+        `${record.event} · ${parsed.root.DT?.[0] || ""} · ${parsed.root.RE?.[0] || ""}`;
+      get<HTMLAnchorElement>("source").href =
+        `https://github.com/gogameguru/commented-go-games/blob/master/${record.path}`;
+      get("source").hidden = false;
+      timeline.max = String(kifu.moves.length);
+      seek(0);
+      msg("同样的气、势与连接，在真实对局里自然呈现。");
+    },
+    (error) => msg(String(error)),
+  );
 }
 get("review-tab").onclick = () => {
   if (review) return;
   cancelBot();
   savedGame = game;
   review = true;
+  kifu = null;
+  cursor = 0;
+  timeline.max = timeline.value = "0";
+  get("review-count").textContent = "棋谱载入中";
+  update();
   get("play-panel").hidden = true;
   get("review-panel").hidden = false;
   get("play-tab").classList.remove("active");
@@ -340,7 +367,7 @@ get("review-tab").onclick = () => {
 };
 get("play-tab").onclick = () => {
   if (!review) return;
-  loadId++;
+  recordLoader.cancel();
   stop();
   review = false;
   game = savedGame;
@@ -371,7 +398,7 @@ get("auto").onclick = () => {
     stop();
     return;
   }
-  if (!kifu) return;
+  if (!review || !kifu) return;
   if (cursor >= kifu.moves.length) seek(0);
   get("auto").textContent = "暂停回放";
   auto = setInterval(() => {
@@ -382,24 +409,26 @@ get("auto").onclick = () => {
 get<HTMLInputElement>("import").onchange = async (event) => {
   const input = event.currentTarget as HTMLInputElement,
     file = input.files?.[0];
-  if (!file) return;
-  stop();
-  loadId++;
-  try {
-    if (file.size > 2e6) throw Error("棋谱请小于 2 MB");
-    const parsed = parseSGF(await file.text());
-    validate(parsed);
-    if (!review) return;
-    kifu = parsed;
-    timeline.max = String(parsed.moves.length);
-    get("game-meta").textContent = file.name;
-    get("source").hidden = true;
-    seek(0);
-    msg("已导入棋谱主线。");
-  } catch (error) {
-    msg(String(error));
-  }
   input.value = "";
+  if (!file || !review) return;
+  stop();
+  await recordLoader.load(
+    async () => {
+      if (file.size > 2e6) throw Error("棋谱请小于 2 MB");
+      return file.text();
+    },
+    (parsed) => {
+      kifu = parsed;
+      game = gameFromKifu(parsed);
+      cursor = 0;
+      timeline.max = String(parsed.moves.length);
+      get("game-meta").textContent = file.name;
+      get("source").hidden = true;
+      seek(0);
+      msg("已导入棋谱主线。");
+    },
+    (error) => msg(String(error)),
+  );
 };
 get("sound").onclick = () => {
   sound = !sound;
@@ -408,16 +437,7 @@ get("sound").onclick = () => {
   ping();
 };
 get("export").onclick = () => {
-  const komi = review ? kifu?.root.KM?.[0] || "0" : "7.5";
-  const sgf =
-    `(;GM[1]FF[4]CA[UTF-8]SZ[${game.n}]KM[${komi}]` +
-    game.history
-      .map(
-        (h) =>
-          `;${h.color === 1 ? "B" : "W"}[${h.move === null ? "" : String.fromCharCode(97 + (h.move % game.n), 97 + Math.floor(h.move / game.n))}]`,
-      )
-      .join("") +
-    ")";
+  const sgf = serializeSGF(game, review ? kifu?.root : undefined);
   const url = URL.createObjectURL(
       new Blob([sgf], { type: "application/x-go-sgf" }),
     ),
@@ -428,17 +448,11 @@ get("export").onclick = () => {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 };
 try {
-  const data = JSON.parse(localStorage.getItem("yiyigo-v1") || "null") as {
-    n: number;
-    moves: { i: number | null; color: 1 | 2 }[];
-  } | null;
-  if (data && [9, 13, 19].includes(data.n) && Array.isArray(data.moves)) {
-    const restored = new Go(data.n);
-    for (const m of data.moves) {
-      if (restored.play(m.i, m.color)) throw Error("无效存档");
-    }
-    game = restored;
+  const restored = restoreSavedGame(localStorage.getItem("yiyigo-v1"));
+  if (restored) {
+    game = restored.game;
     savedGame = game;
+    opponent.value = restored.opponent;
     size.value = String(game.n);
   }
 } catch {
@@ -447,6 +461,7 @@ try {
 try {
   await board.init();
   update();
+  scheduleBot();
 } catch (error) {
   get("board").textContent =
     "棋盘需要浏览器开启 WebGL / 硬件加速。请换用支持 WebGL 的浏览器后重试。";
@@ -455,6 +470,7 @@ try {
 if (import.meta.hot)
   import.meta.hot.dispose(() => {
     cancelBot();
+    recordLoader.cancel();
     stop();
     board.destroy();
     void audio?.close();

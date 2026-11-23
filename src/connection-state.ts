@@ -4,6 +4,7 @@ import type { CrossingTarget } from "./connection-presentation";
 import { Go, links } from "./engine";
 import type { Link } from "./engine";
 import { linkRoutePoints } from "./link-pattern";
+import { groups } from "./position";
 export type ConnectionTone = [number, number, number, number]; // strength, pressure, threat, gap
 export interface ConnectionCrossing extends CrossingTarget {
   from: number;
@@ -46,10 +47,13 @@ export function sampleCut(state:ConnectionState,time:number){
  return (state.cutFrom??state.cut)+(state.cut-(state.cutFrom??state.cut))*ease;
 }
 export function connectionTone(game: Go, link: Link): ConnectionTone {
-  const libs = Math.min(
+  return toneWithLiberties(game, link, Math.min(
     game.group(link.i).liberties.size,
     game.group(link.j).liberties.size,
-  );
+  ));
+}
+
+function toneWithLiberties(game: Go, link: Link, libs: number): ConnectionTone {
   const pressure = Math.max(0, Math.min(1, (4 - libs) / 3));
   const route = linkRoutePoints(game.n, link);
   // Nearby enemy stones put pressure on a jump; this is not a tactical cut proof.
@@ -71,17 +75,44 @@ export function connectionTone(game: Go, link: Link): ConnectionTone {
     0, // One occupied diagonal cut point weakens the neck; it is not a completed cut.
   ];
 }
+// Board-dependent inputs can be retained while only focus or time changes.
+// Callers supplying analysis must invalidate it whenever board contents/size change.
+export function analyzeConnections(game: Go): ConnectionAnalysis {
+  const members = new Map<number, { lib: number; seed: number }>();
+  const membership = new Map<number, number>();
+  for (const group of groups(game)) {
+    const member = { lib: group.liberties.size, seed: group.anchor * 0.23 };
+    for (const p of group.stones) {
+      members.set(p, member);
+      membership.set(p, group.anchor);
+    }
+  }
+  const currentLinks = links(game);
+  const candidates = currentLinks.filter(link => link.kind !== "solid");
+  const tones = new Map(candidates.map(link => [link, toneWithLiberties(
+    game, link, Math.min(members.get(link.i)!.lib, members.get(link.j)!.lib),
+  )]));
+  return { currentLinks, candidates, tones, members, membership };
+}
+export interface ConnectionAnalysis {
+  currentLinks: Link[];
+  candidates: Link[];
+  tones: Map<Link, ConnectionTone>;
+  members: Map<number, { lib: number; seed: number }>;
+  membership: Map<number, number>;
+}
+
 export function updateConnections(
   game: Go,
   states: Map<string, ConnectionState>,
   time: number,
   animate: boolean,
   focus = -1,
+  analysis: ConnectionAnalysis = analyzeConnections(game),
 ): ConnectionState[] {
   const active = new Set<string>();
-  const candidates=links(game).filter(link=>link.kind!=="solid");
-  const tones=new Map(candidates.map(link=>[link,connectionTone(game,link)]));
-  const hidden = hiddenConnections(game, candidates, link => tones.get(link)![0], focus);
+  const { candidates, tones, membership } = analysis;
+  const hidden = hiddenConnections(game, candidates, link => tones.get(link)![0], focus, membership);
   for (const link of candidates) {
     const key = connectionKey(link);
     active.add(key);
@@ -109,7 +140,7 @@ export function updateConnections(
     if (!active.has(key)) {
       if (
         !animate ||
-        (state.to[0] === 0 && time - state.start >= connectionDuration)
+        (state.to[0] === 0 && time >= state.start + connectionDuration)
       ) {
         states.delete(key);
         continue;
@@ -128,7 +159,7 @@ export function updateConnections(
           cut = Math.max(0, Math.min(1, (px * dx + py * dy) / lengthSquared));
         }
         const intact = game.board[i] === color && game.board[j] === color;
-        const merged = intact && game.group(i).stones.has(j);
+        const merged = intact && membership.get(i) === membership.get(j);
         const to:ConnectionTone=merged || !intact ? [0,0,0,0] : [0,1,1,1];
         if(state.to.every((v,i)=>v===to[i])&&!!state.merging===merged&&state.cut===cut)continue;
         states.set(key, {

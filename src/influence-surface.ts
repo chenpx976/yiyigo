@@ -64,14 +64,20 @@ export function createInfluenceSurface() {
     mesh,
     update(game: Go, time: number, animate: boolean, motion = true) {
       if (state.update(game, time, animate && motion)) {
-        origin.dispose(); target.dispose();
-        origin = makeTexture(state.from, game.n); target = makeTexture(state.to, game.n);
-        material.uniforms.uFrom.value = origin; material.uniforms.uTo.value = target;
+        if (origin.image.width !== game.n) {
+          origin.dispose(); target.dispose();
+          origin = makeTexture(state.from, game.n); target = makeTexture(state.to, game.n);
+          material.uniforms.uFrom.value = origin; material.uniforms.uTo.value = target;
+        } else {
+          origin.image.data = state.from; target.image.data = state.to;
+          origin.needsUpdate = target.needsUpdate = true;
+        }
         material.uniforms.uSize.value = game.n;
       }
       if (!motion) state.settle(time);
       material.uniforms.uMix.value = motion ? state.amount(time) : 1;
     },
+    isAnimating(time: number) { return state.amount(time) < 1; },
     setTime(time: number, motion = true) { material.uniforms.uMix.value = motion ? state.amount(time) : 1; },
     dispose() { mesh.removeFromParent(); mesh.geometry.dispose(); material.dispose(); origin.dispose(); target.dispose(); },
   };

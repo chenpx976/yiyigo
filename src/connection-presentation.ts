@@ -1,17 +1,22 @@
 import type { Go, Link } from "./engine";
 
+function groupMembership(game: Go): Map<number, number> {
+  const membership = new Map<number, number>();
+  for (let p = 0; p < game.board.length; p++)
+    if (game.board[p] && !membership.has(p))
+      for (const stone of game.group(p).stones) membership.set(stone, p);
+  return membership;
+}
+
 // This selector changes presentation only. The Go links and their liberties
 // remain intact, and hidden links keep their transition state for restoration.
 export function redundantJumps(
   game: Go,
   candidates: readonly Link[],
   strength: (link: Link) => number,
+  membership: ReadonlyMap<number, number> = groupMembership(game),
 ): Set<Link> {
   const hidden = new Set<Link>();
-  const membership = new Map<number, number>();
-  for (let p = 0; p < game.board.length; p++)
-    if (game.board[p] && !membership.has(p))
-      for (const stone of game.group(p).stones) membership.set(stone, p);
   const diagonals = candidates.filter(l => l.kind === "diagonal" && !l.threatened);
 
   for (const target of candidates) {
@@ -127,13 +132,15 @@ export function hiddenConnections(
   candidates: readonly Link[],
   strength: (link: Link) => number,
   focus = -1,
+  membership: ReadonlyMap<number, number> = groupMembership(game),
 ): Set<Link> {
-  const hidden = redundantJumps(game, candidates, strength);
+  const hidden = redundantJumps(game, candidates, strength, membership);
   // Knight relations often depend on ladders or acceptable sacrifices. Keep
   // their geometric candidates for inspection, without asserting a safe link.
   for (const link of candidates) if (link.kind === "knight") hidden.add(link);
-  const group = game.board[focus] ? game.group(focus).stones : new Set<number>();
-  const related = (link: Link) => group.has(link.i) || group.has(link.j);
+  const focusedGroup = membership.get(focus);
+  const related = (link: Link) => focusedGroup !== undefined &&
+    (membership.get(link.i) === focusedGroup || membership.get(link.j) === focusedGroup);
   for (const link of candidates) if (related(link)) hidden.delete(link);
   const visible = candidates.filter(link => !hidden.has(link));
   const byKey = new Map(visible.map(link => [connectionKey(link), link]));

@@ -8,8 +8,8 @@ import { createLivingSurface } from "./living-stones";
 import type { LivingSurface } from "./living-stones";
 import { createTableScene, disposeObject } from "./table-scene";
 import { cameraCos, cameraSin, sceneWidth, sceneHeight } from "./board-camera";
-import type { ConnectionState } from "./connection-state";
-import type { SurfaceTransition } from "./surface-transition";
+import { connectionDuration, type ConnectionState } from "./connection-state";
+import { morphDuration, type SurfaceTransition } from "./surface-transition";
 export class BoardView {
   private renderer!: THREE.WebGLRenderer;
   private scene = new THREE.Scene();
@@ -40,8 +40,17 @@ export class BoardView {
   private size = 0;
   private clock = 0;
   private observer!: ResizeObserver;
+  private viewportObserver!: IntersectionObserver;
+  private inViewport = true;
   private frame = 0;
+  private resizeFrame = 0;
+  private displayWidth = 0;
+  private displayRatio = 0;
   private lastTime = 0;
+  private animateUntil = 0;
+  private breatheUntil = 0;
+  private retireAt = Infinity;
+  private breathing = false;
   private disposed = false;
   private hitLayer = document.createElement("div");
   private buttons: HTMLButtonElement[] = [];
@@ -53,8 +62,13 @@ export class BoardView {
     this.render(this.game, this.selected, false, this.interactive);
   };
   private visibilityHandler = () => {
+    cancelAnimationFrame(this.frame);
+    this.frame = 0;
     this.lastTime = 0;
-    if (!document.hidden) this.draw();
+    if (!document.hidden) {
+      this.breatheUntil = performance.now() + 3000;
+      this.draw();
+    }
   };
   constructor(
     private host: HTMLElement,
@@ -65,11 +79,13 @@ export class BoardView {
     this.renderer = new THREE.WebGLRenderer({
       antialias: true,
       alpha: true,
-      powerPreference: "high-performance",
+      powerPreference: "low-power",
     });
     this.renderer.setClearColor(0, 0);
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.renderer.shadowMap.autoUpdate = false;
+    this.renderer.shadowMap.needsUpdate = true;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.0;
     this.renderer.domElement.setAttribute("aria-hidden", "true");
@@ -89,7 +105,7 @@ export class BoardView {
     key.position.set(-150, 100, 1100);
     key.target.position.set(380, -380, 0);
     key.castShadow = true;
-    key.shadow.mapSize.set(2048, 2048);
+    key.shadow.mapSize.set(1024, 1024);
     Object.assign(key.shadow.camera, {
       left: -750,
       right: 750,
@@ -114,39 +130,78 @@ export class BoardView {
     this.observer = new ResizeObserver(() => {
       const w = Math.max(1, this.host.clientWidth);
       const h = w * sceneHeight / sceneWidth;
-      // Supersample fine 19-line silhouettes, with a bounded framebuffer cost.
-      const ratio = Math.min(3, Math.max(2, devicePixelRatio * 1.5), Math.sqrt(8_000_000 / (w * h)));
-      this.renderer.setPixelRatio(ratio);
-      this.renderer.setSize(w, h);
-      this.host.dataset.renderScale = ratio.toFixed(2);
-      this.buildHits();
-      this.draw();
+      // Respect native density, with bounded work on Retina and large displays.
+      const ratio = Math.min(1.5, devicePixelRatio || 1, Math.sqrt(1_500_000 / (w * h)));
+      if (w === this.displayWidth && ratio === this.displayRatio) return;
+      cancelAnimationFrame(this.resizeFrame);
+      this.resizeFrame = requestAnimationFrame(() => {
+        this.resizeFrame = 0;
+        if (this.disposed) return;
+        this.displayWidth = w;
+        this.displayRatio = ratio;
+        this.renderer.setPixelRatio(ratio);
+        this.renderer.setSize(w, h);
+        this.host.dataset.renderScale = ratio.toFixed(2);
+        this.buildHits();
+        this.draw();
+      });
     });
     this.observer.observe(this.host);
+    this.viewportObserver = new IntersectionObserver(([entry]) => {
+      this.inViewport = entry.isIntersecting;
+      if (this.inViewport) {
+        this.breatheUntil = performance.now() + 3000;
+        this.draw();
+      }
+      else {
+        cancelAnimationFrame(this.frame);
+        this.frame = 0;
+        this.lastTime = 0;
+      }
+    });
+    this.viewportObserver.observe(this.host);
     this.reduced.addEventListener("change", this.motionHandler);
     document.addEventListener("visibilitychange", this.visibilityHandler);
-    const tick = (now: number) => {
-      if (this.disposed) return;
-      this.frame = requestAnimationFrame(tick);
-      if (document.hidden || this.reduced.matches) {
-        this.lastTime = 0;
-        return;
-      }
-      if (this.lastTime && now - this.lastTime < 25) return;
-      const dt = this.lastTime
-        ? Math.min(0.1, (now - this.lastTime) / 1000)
-        : 0;
-      this.lastTime = now;
-      this.clock += dt;
-      this.live?.setTime(this.clock);
-      this.field.setTime(this.clock);
-      this.draw();
-    };
-    this.frame = requestAnimationFrame(tick);
   }
+  private needsAnimation() {
+    return (this.breathing && performance.now() < this.breatheUntil) || this.clock < this.animateUntil ||
+      (this.field.mesh.visible && this.field.isAnimating(this.clock));
+  }
+  private scheduleFrame() {
+    if (this.disposed || document.hidden || !this.inViewport || this.reduced.matches || !this.needsAnimation()) {
+      this.lastTime = 0;
+      return;
+    }
+    if (!this.frame) this.frame = requestAnimationFrame(this.tick);
+  }
+  private tick = (now: number) => {
+    this.frame = 0;
+    if (this.disposed || document.hidden || !this.inViewport || this.reduced.matches || !this.needsAnimation()) {
+      this.lastTime = 0;
+      return;
+    }
+    const transitioning = this.clock < this.animateUntil || this.field.isAnimating(this.clock);
+    const interval = transitioning ? 1000 / 30 : 1000 / 12;
+    if (this.lastTime && now - this.lastTime < interval) {
+      this.scheduleFrame();
+      return;
+    }
+    const dt = this.lastTime ? Math.min(0.1, (now - this.lastTime) / 1000) : 0;
+    this.lastTime = now;
+    this.clock += dt;
+    // Slow, subpixel neck breathing reuses the settled shadow. Geometry
+    // transitions still refresh it through their final frame.
+    if (this.clock - dt < this.animateUntil) this.renderer.shadowMap.needsUpdate = true;
+    if (this.clock >= this.retireAt)
+      this.rebuildSurface(this.previous, false, this.surfaceFocus);
+    this.live?.setTime(this.clock);
+    this.field.setTime(this.clock);
+    this.draw();
+  };
   private draw() {
-    if (this.renderer && !this.disposed)
+    if (this.renderer && !this.disposed && !document.hidden && this.inViewport)
       this.renderer.render(this.scene, this.camera);
+    this.scheduleFrame();
   }
   private point(i: number): [number, number] {
     const s = 660 / (this.game.n - 1);
@@ -279,15 +334,42 @@ export class BoardView {
     return this.game.board[i] ? Math.min(...this.game.group(i).stones) : -1;
   }
   private rebuildSurface(previous: Cell[], animate: boolean, focus: number) {
-    if (this.live) { this.scene.remove(this.live.mesh); this.live.dispose(); }
     this.surfaceFocus = focus;
-    this.live = createLivingSurface(
-      this.game, previous, animate, this.clock, !this.reduced.matches,
-      this.connections, this.surfaces, false, focus,
-    );
-    this.scene.add(this.live.mesh);
+    if (this.renderer) this.renderer.shadowMap.needsUpdate = true;
+    if (this.live) {
+      this.live.update(this.game, previous, animate, this.clock, !this.reduced.matches, focus);
+    } else {
+      this.live = createLivingSurface(
+        this.game, previous, animate, this.clock, !this.reduced.matches,
+        this.connections, this.surfaces, focus,
+      );
+      this.scene.add(this.live.mesh);
+    }
+    this.animateUntil = this.clock;
+    this.retireAt = Infinity;
+    this.breathing = false;
+    for (const state of this.surfaces.values()) {
+      const end = state.start + morphDuration;
+      if (state.from !== state.to) this.animateUntil = Math.max(this.animateUntil, end);
+      if (state.to === 0) this.retireAt = Math.min(this.retireAt, end);
+    }
+    for (const state of this.connections.values()) {
+      const end = state.start + connectionDuration;
+      const fromVisibility = state.fromVisibility ?? Number(state.from[0] > 0);
+      const toVisibility = state.toVisibility ?? Number(state.to[0] > 0);
+      if (fromVisibility !== toVisibility || state.from.some((value, i) => value !== state.to[i]) ||
+        (state.cutFrom ?? state.cut) !== state.cut)
+        this.animateUntil = Math.max(this.animateUntil, end);
+      if (state.to[0] === 0) this.retireAt = Math.min(this.retireAt, end);
+      if (toVisibility > 0 && state.to[0] > 0 &&
+        this.game.board[state.link.i] === state.link.color &&
+        this.game.board[state.link.j] === state.link.color)
+        this.breathing = true;
+    }
+    this.animateUntil = Math.max(this.animateUntil, Number.isFinite(this.retireAt) ? this.retireAt : 0);
   }
   render(game: Go, selected = -1, animate = false, interactive = true) {
+    this.breatheUntil = performance.now() + 3000;
     const start = performance.now(),
       same = this.game.n === game.n,
       old = this.previous;
@@ -383,6 +465,7 @@ export class BoardView {
   }
   focus(i: number) {
     const focus = this.focusedGroup(i);
+    this.breatheUntil = performance.now() + 3000;
     if (focus !== this.surfaceFocus) this.rebuildSurface(this.previous, false, focus);
     this.clear(this.hints);
     if (i < 0) {
@@ -492,9 +575,11 @@ export class BoardView {
             this.onInspect(i);
           }
         });
-        button.addEventListener("pointerleave", () =>
-          this.focus(this.selected),
-        );
+        button.addEventListener("pointerleave", (event) => {
+          if (event.pointerType === "touch" ||
+            (event.relatedTarget instanceof Node && this.hitLayer.contains(event.relatedTarget))) return;
+          this.focus(this.selected);
+        });
         button.addEventListener("focus", () => {
           this.focusIndex = i;
           this.focus(i);
@@ -544,7 +629,9 @@ export class BoardView {
   destroy() {
     this.disposed = true;
     cancelAnimationFrame(this.frame);
+    cancelAnimationFrame(this.resizeFrame);
     this.observer.disconnect();
+    this.viewportObserver.disconnect();
     this.reduced.removeEventListener("change", this.motionHandler);
     document.removeEventListener("visibilitychange", this.visibilityHandler);
     this.hitLayer.remove();

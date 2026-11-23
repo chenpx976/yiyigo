@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Board renderer acceptance fixture</title>
+<style>
+  body { margin: 0; min-height: 2400px; background: #172b29; }
+  #board { position: relative; width: 760px; }
+  canvas { display: block; }
+  .board-hits { position: absolute; inset: 0; }
+  .intersection { position: absolute; border: 0; padding: 0; background: transparent; }
+</style>
+<div id="board"></div>
+<script type="module">
+  import { BoardView } from '/src/board.ts';
+  import { Go, parseSGF, gameFromKifu } from '/src/engine.ts';
+  const board = new BoardView(document.querySelector('#board'), () => {}, () => {});
+  await board.init();
+  let game = new Go(9), draws = 0, shadowDraws = 0;
+  const observedShadows = new WeakSet();
+  const render = board.renderer.render.bind(board.renderer);
+  board.renderer.render = (...args) => {
+    draws++;
+    board.scene.traverse(object => {
+      if (!object.isMesh || !object.castShadow || observedShadows.has(object)) return;
+      observedShadows.add(object);
+      const beforeShadow = object.onBeforeShadow;
+      object.onBeforeShadow = function (...args) { shadowDraws++; return beforeShadow.apply(this, args); };
+    });
+    return render(...args);
+  };
+  const fixture = window.boardFixture = {
+    board,
+    get game() { return game; },
+    get draws() { return draws; },
+    get shadowDraws() { return shadowDraws; },
+    load(sgf) {
+      game = gameFromKifu(parseSGF(sgf));
+      board.render(game, -1, false, true);
+    },
+    play(i, color) {
+      const error = game.play(i, color);
+      if (error) throw Error(error);
+      board.render(game, -1, true, true);
+    },
+    resources() {
+      const result = [board.live, board.live.mesh];
+      board.live.mesh.traverse(object => {
+        if (object.geometry) result.push(object.geometry);
+        for (const material of [object.material, object.customDepthMaterial].flat().filter(Boolean)) {
+          result.push(material);
+          for (const uniform of Object.values(material.uniforms ?? {})) if (uniform.value?.isTexture) result.push(uniform.value);
+        }
+      });
+      return result;
+    },
+  };
+  fixture.load('(;GM[1]FF[4]SZ[9])');
+  addEventListener('pagehide', () => board.destroy(), { once: true });
+</script>
+</html>

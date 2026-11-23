@@ -1,6 +1,24 @@
 import * as THREE from 'three';
-import { connectionEnvelopeGLSL } from './connection-envelope';
+import { attachmentHeightBounds, connectionEnvelopeGLSL } from './connection-envelope';
 import { connectionMotionGLSL } from './connection-motion';
+import { stoneProfile } from './stone-profile';
+
+// CPU reference for diagnostics, paired with the GLSL body intersection below.
+// The origin is outside the ellipsoid, as on the renderer's ray-entry plane.
+// Directions need not be normalized: the hit is origin + t * ray.
+export function rayEllipsoidIntersection(
+ origin: readonly [number, number, number], ray: readonly [number, number, number],
+ center: readonly [number, number, number], radii: readonly [number, number, number],
+): number | null {
+ const ox=(origin[0]-center[0])/radii[0],oy=(origin[1]-center[1])/radii[1],oz=(origin[2]-center[2])/radii[2];
+ const dx=ray[0]/radii[0],dy=ray[1]/radii[1],dz=ray[2]/radii[2];
+ const a=dx*dx+dy*dy+dz*dz,closestTime=-(ox*dx+oy*dy+oz*dz)/a;
+ const x=ox+closestTime*dx,y=oy+closestTime*dy,z=oz+closestTime*dz;
+ const remaining=1-(x*x+y*y+z*z);
+ if(remaining<0)return null;
+ const distance=closestTime-Math.sqrt(remaining/a);
+ return distance>=0?distance:null;
+}
 
 // Orthographic ray/solid intersection. Crowns and connections are evaluated as
 // ONE 3D field, so no overlapping shells or painted seam normals are needed.
@@ -18,6 +36,31 @@ float ellipsoid(vec3 p,vec3 radii){
 }
 ${connectionEnvelopeGLSL}
 float sceneDistance(vec3 p,vec2 range){vec2 d=solidField(p,range);return min(d.x,d.y);}
+// The body field's zero set is an ellipsoid. Solve it once per ray instead of
+// evaluating every body at every march step. y bounds all attachment tops:
+// taper stays between root and waist, cuts shrink z, and breathing changes y only.
+vec2 surfaceRayLimits(vec3 origin,vec3 ray,vec2 range){
+ float nearest=1.e20,top=-1.;
+ for(int k=0;k<int(range.y);k++){
+  int id=int(record(int(range.x)+k).x);
+  vec4 info=record(id+1);
+  if(info.x>.5){
+   top=max(top,info.x<1.5?${attachmentHeightBounds.solid}:${attachmentHeightBounds.virtual});
+   continue;
+  }
+  float life=nodeLife(id);if(life<.001)continue;
+  float halfHeight=${stoneProfile.height / 2}*life;
+  vec3 radii=vec3(${stoneProfile.radius}*life,${stoneProfile.radius}*life,halfHeight);
+  vec3 offset=(origin-vec3(record(id).xy,halfHeight))/radii,direction=ray/radii;
+  float a=dot(direction,direction),closestTime=-dot(offset,direction)/a;
+  vec3 closest=offset+closestTime*direction;
+  float remaining=1.-dot(closest,closest);
+  if(remaining<0.)continue;
+  float distance=closestTime-sqrt(remaining/a);
+  if(distance>=0.&&origin.z+ray.z*distance>=.001)nearest=min(nearest,distance);
+ }
+ return vec2(nearest,top);
+}
 `;
 
 export function createImplicitStones(geometry: THREE.BufferGeometry, uniforms: Record<string, {value: unknown}>) {
@@ -35,11 +78,24 @@ export function createImplicitStones(geometry: THREE.BufferGeometry, uniforms: R
    #include <packing>
    ${implicitFieldGLSL}
    void main(){
-    vec3 p=vec3(vPoint,.50);float d=1.;bool hit=false;
+    vec3 origin=vec3(vPoint,.50),p=origin;bool hit=false;
+    vec2 limits=surfaceRayLimits(origin,uRay,vRange);
+    float travel=0.;
+    if(limits.y<0.){
+     if(limits.x==1.e20)discard;
+     p=origin+uRay*limits.x;hit=true;
+    }else{
+     if(uRay.z<0.)travel=max(0.,(origin.z-limits.y-.00025)/-uRay.z);
+     if(limits.x<=travel){p=origin+uRay*limits.x;hit=true;}
+     else p=origin+uRay*travel;
+    }
     for(int stepIndex=0;stepIndex<64;stepIndex++){
-     d=sceneDistance(p,vRange);
+     if(hit)break;
+     float d=attachmentDistance(p,vRange);
      if(d<.00025){hit=true;break;}
-     p+=uRay*max(.00015,d*.65);
+     travel+=max(.00015,d*.65);
+     if(travel>=limits.x){p=origin+uRay*limits.x;hit=true;break;}
+     p=origin+uRay*travel;
      if(p.z<.001)break;
     }
     if(!hit)discard;

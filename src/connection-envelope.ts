@@ -8,6 +8,12 @@ export const attachmentRoot = (solid: boolean, visibility=1) => {
  const base=solid ? .36 : .42;
  return base+(stoneProfile.radius-.0001-base)*(1-clamp(visibility))**2;
 };
+// All lifecycle/visibility values are in [0,1]. Taper remains between its root
+// and waist heights; cuts shrink the section, and breathing affects width only.
+export const attachmentHeightBounds = Object.freeze({
+ solid: stoneProfile.height / 2 * (1 + Math.sqrt(1 - (attachmentRoot(true) / stoneProfile.radius) ** 2)),
+ virtual: stoneProfile.height / 2 * (1 + Math.sqrt(1 - (attachmentRoot(false) / stoneProfile.radius) ** 2)),
+});
 const smooth=(u:number)=>{const t=clamp(u);return t*t*(3-2*t)};
 export const neckProfile = Object.freeze({ solidWidth: .205, solidTop: .225, solidBottom: .045, virtualWidth: .012, virtualStrength: .022 });
 function taper(start: number, end: number, slope: number, span: number, u: number) {
@@ -116,11 +122,13 @@ float nodeLife(int id){
  if(id<0)return 0.;
  return mix(record(id+2).x,record(id+3).x,smoothstep(0.,.7,uTime-record(id+4).x));
 }
-vec2 solidField(vec3 p,vec2 range){
+vec2 surfaceField(vec3 p,vec2 range,bool includeBodies){
  vec2 bodies=vec2(5.),attachments=vec2(5.);
  for(int k=0;k<int(range.y);k++){
   int id=int(record(int(range.x)+k).x);
-  vec4 info=record(id+1),location=record(id);
+  vec4 info=record(id+1);
+  if(info.x<.5&&!includeBodies)continue;
+  vec4 location=record(id);
   int color=int(info.y)-1;
   if(info.x<.5){
    float life=nodeLife(id);if(life<.001)continue;
@@ -159,4 +167,6 @@ vec2 solidField(vec3 p,vec2 range){
  // Tangent continuation, with no additive blend collar or accumulated volume.
  return min(bodies,attachments);
 }
+vec2 solidField(vec3 p,vec2 range){return surfaceField(p,range,true);}
+float attachmentDistance(vec3 p,vec2 range){vec2 d=surfaceField(p,range,false);return min(d.x,d.y);}
 `;

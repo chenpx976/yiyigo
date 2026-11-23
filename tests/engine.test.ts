@@ -59,6 +59,21 @@ test("SGF handles branches, escaped comments and passes", () => {
     { color: 1, i: null },
   ]);
 });
+test("legacy tt passes are accepted for both colors on every supported board", () => {
+  for (const n of [9, 13, 19]) {
+    const record = parseSGF(`(;SZ[${n}];B[tt];W[tt])`);
+    assert.deepEqual(record.moves, [{ color: 1, i: null }, { color: 2, i: null }]);
+    const game = new Go(n);
+    for (const move of record.moves) assert.equal(game.play(move.i, move.color), null);
+    assert.equal(game.ended, true);
+    assert.throws(() => parseSGF(`(;SZ[${n}];B[ta])`), /坐标/);
+  }
+});
+test("non-root PL is rejected instead of silently changing the replay turn", () => {
+  for (const text of ["(;SZ[9];PL[W];W[aa])", "(;SZ[9];B[aa]PL[B])", "(;SZ[9](;PL[W];W[bb]))"])
+    assert.throws(() => parseSGF(text), /仅支持根节点 PL/);
+  assert.equal(parseSGF("(;SZ[9]PL[W];W[aa])").toPlay, 2);
+});
 for (let file of ["cho", "gu", "lee"])
   test(`full champion replay: ${file}`, () => {
     let k = parseSGF(readFileSync(`public/games/${file}.sgf`, "utf8")),

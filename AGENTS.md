@@ -14,12 +14,13 @@
 - `src/`: application, rules, analysis, rendering, and styles; `tests/`: flat production-module regression tests.
 - `public/games/`: professional SGFs and their license; `public/qi-mai/`: authored fixtures and independent expectations in `manifest.json`. Preserve game attribution and licensing.
 - `dev/`: local visual-review pages and atlas helpers, separate from the published game. `artifacts/`: captured QA screenshots; `scripts/`: Pages publishing.
+- `browser/`: isolated Playwright acceptance tests and a real `BoardView` fixture; keep browser tests outside the Node `tests/*.test.ts` glob.
 
 ## Development Commands
 - Setup/run: `npm ci`; `npm run dev` (also `npm start`) serves `http://127.0.0.1:4173` with a strict port.
 - Build: `npm run build` runs typecheck then Vite; `npm run preview` serves the existing `dist/` on port 4174.
 - Checks: `npm run typecheck`; `npm test`; `npm run check` combines typecheck, all tests, and build. No lint or formatter command is configured.
-- Focused test: `node --import tsx --test tests/engine.test.ts`. `npm run test:qi-mai` selects seven corpus/atlas/surface suites; it does not cover every connection, focus, or influence regression.
+- Focused test: `node --import tsx --test tests/engine.test.ts`. `npm run test:qi-mai` selects seven corpus/atlas/surface suites. Browser: `npx playwright install chromium`, then `npm run test:browser`; after building, `YIYIGO_BROWSER_PREVIEW=1 npm run test:browser` also checks production subpath assets and Worker.
 - Publishing: `npm run deploy:pages` runs checks and pushes `dist/` to `gh-pages`. It requires clean `main`, HEAD matching remote `main`, GitHub origin, Git identity, and credentials; use only for an authorized deployment. See `README.md` and `scripts/deploy-pages.mjs`.
 
 ## Code Conventions & Common Patterns
@@ -28,11 +29,11 @@
 - Board indices are row-major (`y * n + x`); `0` is empty, colors are `1 | 2`, and `null` means pass. `Go.play()` returns an error string or `null`; rejected moves must not mutate state.
 - Async bot work uses request IDs and worker termination to discard obsolete results. Record loading uses generation checks; preserve stale-result guards when changing async paths. Surface recoverable failures through UI status.
 - Potential links never merge real groups or share liberties; display suppression must preserve tactical strength. Influence is neither territory nor win probability and retains separate black/white channels.
-- Preserve `reset` / `retarget` / `sample` transition semantics. Retarget from the currently displayed state; focus changes must not restart stone or influence lifecycles. Support rapid undo, reduced motion, hidden-tab pausing, and resource cleanup.
+- Preserve `reset` / `retarget` / `sample` semantics and retarget from displayed state. Reuse GPU resources and unchanged-board analysis. Preserve the 1.5M-pixel/1.5-DPR budget, cached breathing shadows, 30-FPS transitions and 12-FPS breathing; decorative motion rests after 3 seconds without interaction. Clean retired records at deadlines and pause hidden/offscreen boards.
 - Preserve settled stone shapes and tangent connection roots; deform connecting material. Avoid duplicate-edge swelling, false nodes, sideways detours, and fixed gaps. Production camera stays directly overhead; angled views are review tools.
 
 ## Important Files
-- `index.html`, `src/main.ts`, `src/board.ts`: HTML/DOM contract, application controller, and rendering/accessible interaction boundary.
+- `index.html`, `src/main.ts`, `src/record-io.ts`, `src/board.ts`: HTML/DOM contract, application controller, SGF/save/load boundaries, and rendering/accessible interaction.
 - `src/engine.ts`, `src/connection-presentation.ts`, `src/connection-envelope.ts`, `src/surface-model.ts`: rules, visibility policy, shared geometry, and render records.
 - `package.json`, `package-lock.json`, `tsconfig.json`, `vite.config.ts`: canonical commands, dependencies, compiler options, and deployment base.
 - `README.md`: setup/publishing; `DESIGN.md` and `CONNECTIONS.md`: current design/architecture; opening section of `TESTING.md`: latest recorded acceptance and limitations. Older QA sections contain superseded claims.
@@ -44,7 +45,7 @@
 - `dist/` is generated output. Review pages run under the dev server; `.openai/hosting.json` is historical and unused by current Pages publishing.
 
 ## Testing & QA
-- Tests use `node:test` and `node:assert/strict` through `tsx`, importing production TypeScript. No numeric coverage threshold is configured; exercise relevant behavior with focused tests before broader checks.
+- Node tests use `node:test` and `node:assert/strict` through `tsx`. `browser/acceptance.test.mjs` uses Playwright Chromium with isolated contexts and an ephemeral Vite server; `npm run check` does not include browser acceptance. No numeric coverage threshold is configured.
 - Protect legal replay/capture/undo, independent liberties, display-versus-tactical state, fixed stone geometry, symmetric connections, rapid transition reversals, and cleanup. New fixture regressions need explicit expected outcomes, minimal SGFs, and relevant color/direction variants.
 - Visual changes require browser inspection of the main game and relevant `dev/` pages: begin with `/dev/case-atlas.html`, then roots/side views (`/dev/connection-lab.html`), real games and rapid interactions (`/dev/transition-review.html`); use `/dev/influence-review.html` for influence.
 - CPU geometry assertions and GPU pixel comparisons do not establish visual quality. Save actual screenshots in `artifacts/` and record observed results and remaining limits in `TESTING.md`; do not present historical passes as fresh verification.

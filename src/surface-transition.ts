@@ -42,7 +42,7 @@ export function updateSurfaces(
         states.delete(key);
         continue;
       }
-      if (old.to === 0 && time - old.start >= morphDuration) {
+      if (old.to === 0 && time >= old.start + morphDuration) {
         states.delete(key);
         continue;
       }

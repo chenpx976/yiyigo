@@ -13,6 +13,7 @@
     "build": "npm run typecheck && vite build",
     "preview": "vite preview --host 127.0.0.1 --port 4174 --strictPort",
     "test": "tsx --test tests/*.test.ts",
+    "test:browser": "node --test --test-concurrency=1 browser/acceptance.test.mjs",
     "check": "npm run typecheck && npm test && vite build",
     "test:qi-mai": "node --import tsx --test tests/qi-mai-corpus.test.ts tests/case-atlas.test.ts tests/visual-atlas.test.ts tests/whole-connection.test.ts tests/surface-reset.test.ts tests/stone-body.test.ts tests/thread-route.test.ts",
     "deploy:pages": "npm run check && node scripts/deploy-pages.mjs"
@@ -23,6 +24,7 @@
   "devDependencies": {
     "@types/node": "^24.0.0",
     "@types/three": "0.187.0",
+    "playwright": "1.65.1",
     "tsx": "^4.20.0",
     "typescript": "5.9.3",
     "vite": "8.3.8"

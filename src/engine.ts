@@ -112,7 +112,8 @@ export class Go {
         this.board = old;
         return "禁入点：落子后没有气";
       }
-      if (this.history.some((h) => h.board.join("") === this.board.join(""))) {
+      const position = this.board.join("");
+      if (this.history.some((h) => h.board.join("") === position)) {
         this.board = old;
         return "打劫：不能立即还原先前局面";
       }
@@ -232,6 +233,7 @@ export function parseSGF(text: string): Kifu {
     for (let c of ["B", "W"])
       if (node[c]) {
         let v = node[c][0];
+        if (v === "tt" && n <= 19) v = "";
         if (v !== "" && !/^[a-s]{2}$/.test(v)) throw Error("棋谱坐标无效");
         let x = v.charCodeAt(0) - 97,
           y = v.charCodeAt(1) - 97;
@@ -241,6 +243,8 @@ export function parseSGF(text: string): Kifu {
   }
   if (root.AE || nodes.slice(1).some(node=>node.AB||node.AW||node.AE))
     throw Error("仅支持根节点摆子，不支持中途编辑棋盘");
+  if (nodes.slice(1).some(node => node.PL))
+    throw Error("仅支持根节点 PL，不支持中途更改行棋方");
   const setup: {i:number;color:Color}[]=[],seen=new Set<number>();
   for(const [prop,color] of [["AB",1],["AW",2]] as const)for(const value of root[prop]??[]){
     if(!/^[a-s]{2}$/.test(value))throw Error("摆子坐标无效（暂不支持压缩范围）");
