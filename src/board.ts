@@ -10,6 +10,7 @@ import { createTableScene, disposeObject } from "./table-scene";
 import { cameraCos, cameraSin, sceneWidth, sceneHeight } from "./board-camera";
 import { connectionDuration, type ConnectionState } from "./connection-state";
 import { morphDuration, type SurfaceTransition } from "./surface-transition";
+import { createGridMaterial } from './grid-material';
 export class BoardView {
   private renderer!: THREE.WebGLRenderer;
   private scene = new THREE.Scene();
@@ -286,17 +287,6 @@ export class BoardView {
     canvas.width = canvas.height = 2048;
     const ctx = canvas.getContext("2d")!;
     ctx.scale(2048 / 760, 2048 / 760);
-    ctx.strokeStyle = "rgba(92,69,43,.68)";
-    ctx.lineWidth = 0.7;
-    ctx.beginPath();
-    for (let i = 0; i < n; i++) {
-      const p = 50 + i * s;
-      ctx.moveTo(50, p);
-      ctx.lineTo(710, p);
-      ctx.moveTo(p, 50);
-      ctx.lineTo(p, 710);
-    }
-    ctx.stroke();
     ctx.fillStyle = "#796141";
     ctx.font = "12px system-ui";
     ctx.textAlign = "center";
@@ -319,11 +309,7 @@ export class BoardView {
     this.fixedTextures.push(texture);
     const mesh = new THREE.Mesh(
       new THREE.PlaneGeometry(760, 760),
-      new THREE.MeshBasicMaterial({
-        map: texture,
-        transparent: true,
-        depthWrite: false,
-      }),
+      createGridMaterial(texture, n),
     );
     mesh.position.set(380, -380, 0.4);
     mesh.renderOrder = 1;

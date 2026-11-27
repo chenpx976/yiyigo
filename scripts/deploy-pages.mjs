@@ -11,6 +11,7 @@ const git = (args, cwd = root) => execFileSync('git', args, { cwd, encoding: 'ut
 if (git(['status', '--porcelain'])) throw new Error('Commit the source changes before publishing.');
 if (git(['branch', '--show-current']) !== 'main') throw new Error('Publish from main.');
 const sourceCommit = git(['rev-parse', 'HEAD']);
+const attribution = git(['log', '-1', '--format=%(trailers:key=Co-Authored-By)']);
 const remote = git(['remote', 'get-url', 'origin']);
 const repository = remote.match(/github\.com[:/]([^/]+)\/([^/]+?)(?:\.git)?$/);
 if (!repository) throw new Error('origin must point to the intended GitHub repository.');
@@ -38,7 +39,8 @@ try {
   git(['add', '--all'], checkout);
   const changed = spawnSync('git', ['diff', '--cached', '--quiet'], { cwd: checkout });
   if (changed.status === 1) {
-    git(['-c', `user.name=${identity.name}`, '-c', `user.email=${identity.email}`, 'commit', '-m', `Deploy ${sourceCommit.slice(0, 7)}`], checkout);
+    const message = `Deploy ${sourceCommit.slice(0, 7)}${attribution ? `\n\n${attribution}` : ''}`;
+    git(['-c', `user.name=${identity.name}`, '-c', `user.email=${identity.email}`, 'commit', '-m', message], checkout);
     git(['push', 'origin', 'HEAD:gh-pages'], checkout);
   } else if (changed.status !== 0) throw new Error('Cannot inspect staged deployment.');
   console.log(`Published build for ${sourceCommit}`);

@@ -14,6 +14,9 @@
     "preview": "vite preview --host 127.0.0.1 --port 4174 --strictPort",
     "test": "tsx --test tests/*.test.ts",
     "test:browser": "node --test --test-concurrency=1 browser/acceptance.test.mjs",
+    "test:babylon": "node --test browser/babylon-compare.test.mjs",
+    "test:surface": "YIYIGO_COMPARE_SURFACE=1 node --test browser/babylon-compare.test.mjs",
+    "test:surface:accuracy": "node --test browser/surface-accuracy.test.mjs",
     "check": "npm run typecheck && npm test && vite build",
     "test:qi-mai": "node --import tsx --test tests/qi-mai-corpus.test.ts tests/case-atlas.test.ts tests/visual-atlas.test.ts tests/whole-connection.test.ts tests/surface-reset.test.ts tests/stone-body.test.ts tests/thread-route.test.ts",
     "deploy:pages": "npm run check && node scripts/deploy-pages.mjs"
@@ -22,6 +25,7 @@
     "three": "0.187.0"
   },
   "devDependencies": {
+    "@babylonjs/core": "9.38.0",
     "@types/node": "^24.0.0",
     "@types/three": "0.187.0",
     "playwright": "1.65.1",

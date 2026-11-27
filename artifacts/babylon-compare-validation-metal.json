@@ -1,0 +1,21 @@
+{
+  "full": {
+    "changedFraction": 0,
+    "meanMaxChannelDifference": 0,
+    "dark": 92740,
+    "light": 12886
+  },
+  "rapid": {
+    "changedFraction": 0,
+    "meanMaxChannelDifference": 0,
+    "dark": 92740,
+    "light": 12886
+  },
+  "detail": {
+    "changedFraction": 0,
+    "meanMaxChannelDifference": 0.00385986328125,
+    "dark": 148274,
+    "light": 13046
+  },
+  "errors": []
+}

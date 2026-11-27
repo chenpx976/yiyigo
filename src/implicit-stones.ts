@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { attachmentHeightBounds, connectionEnvelopeGLSL } from './connection-envelope';
 import { connectionMotionGLSL } from './connection-motion';
 import { stoneProfile } from './stone-profile';
+import { verticalSurfaceGLSL } from './vertical-surface';
 
 // CPU reference for diagnostics, paired with the GLSL body intersection below.
 // The origin is outside the ellipsoid, as on the renderer's ray-entry plane.
@@ -35,6 +36,7 @@ float ellipsoid(vec3 p,vec3 radii){
  return k0*(k0-1.)/max(k1,.00001);
 }
 ${connectionEnvelopeGLSL}
+${verticalSurfaceGLSL}
 float sceneDistance(vec3 p,vec2 range){vec2 d=solidField(p,range);return min(d.x,d.y);}
 // The body field's zero set is an ellipsoid. Solve it once per ray instead of
 // evaluating every body at every march step. y bounds all attachment tops:
@@ -79,6 +81,13 @@ export function createImplicitStones(geometry: THREE.BufferGeometry, uniforms: R
    ${implicitFieldGLSL}
    void main(){
     vec3 origin=vec3(vPoint,.50),p=origin;bool hit=false;
+    // Main board rays are vertical: solve each elliptical cross-section once.
+    // Angled review and shadow rays retain the original general intersection.
+    if(abs(uRay.x)+abs(uRay.y)<.0000001&&uRay.z<0.){
+     p.z=verticalSurfaceHeight(vPoint,vRange);
+     if(p.z<.001)discard;
+     hit=true;
+    }else{
     vec2 limits=surfaceRayLimits(origin,uRay,vRange);
     float travel=0.;
     if(limits.y<0.){
@@ -97,6 +106,7 @@ export function createImplicitStones(geometry: THREE.BufferGeometry, uniforms: R
      if(travel>=limits.x){p=origin+uRay*limits.x;hit=true;break;}
      p=origin+uRay*travel;
      if(p.z<.001)break;
+    }
     }
     if(!hit)discard;
     vec4 view=viewMatrix*vec4(50.+p.x*uSpacing,-50.-p.y*uSpacing,p.z*uSpacing+.5,1.);

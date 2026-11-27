@@ -1,0 +1,2022 @@
+{
+  "fixtures": 64,
+  "comparisons": 224,
+  "rows": [
+    {
+      "fixture": "center",
+      "label": "initial",
+      "side": false,
+      "visible": 2668,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0000152587890625
+    },
+    {
+      "fixture": "center",
+      "label": "side",
+      "side": true,
+      "visible": 2376,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "center-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 2668,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0000152587890625
+    },
+    {
+      "fixture": "center-swap",
+      "label": "side",
+      "side": true,
+      "visible": 2376,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "corner",
+      "label": "initial",
+      "side": false,
+      "visible": 2668,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0000152587890625
+    },
+    {
+      "fixture": "corner",
+      "label": "side",
+      "side": true,
+      "visible": 2376,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "corner-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 2668,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0000152587890625
+    },
+    {
+      "fixture": "corner-swap",
+      "label": "side",
+      "side": true,
+      "visible": 2376,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "edge",
+      "label": "initial",
+      "side": false,
+      "visible": 2668,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.000030517578125
+    },
+    {
+      "fixture": "edge",
+      "label": "side",
+      "side": true,
+      "visible": 2376,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "edge-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 2668,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0000152587890625
+    },
+    {
+      "fixture": "edge-swap",
+      "label": "side",
+      "side": true,
+      "visible": 2376,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "line",
+      "label": "initial",
+      "side": false,
+      "visible": 8444,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0007476806640625
+    },
+    {
+      "fixture": "line",
+      "label": "side",
+      "side": true,
+      "visible": 7536,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "line-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 8444,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.00225830078125
+    },
+    {
+      "fixture": "line-swap",
+      "label": "side",
+      "side": true,
+      "visible": 7536,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "elbow",
+      "label": "initial",
+      "side": false,
+      "visible": 8444,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0009765625
+    },
+    {
+      "fixture": "elbow",
+      "label": "side",
+      "side": true,
+      "visible": 7500,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "elbow-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 8444,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0021514892578125
+    },
+    {
+      "fixture": "elbow-swap",
+      "label": "side",
+      "side": true,
+      "visible": 7500,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "tee",
+      "label": "initial",
+      "side": false,
+      "visible": 11332,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0013427734375
+    },
+    {
+      "fixture": "tee",
+      "label": "side",
+      "side": true,
+      "visible": 10078,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "tee-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 11332,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.003265380859375
+    },
+    {
+      "fixture": "tee-swap",
+      "label": "side",
+      "side": true,
+      "visible": 10078,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "cross",
+      "label": "initial",
+      "side": false,
+      "visible": 14220,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0019378662109375
+    },
+    {
+      "fixture": "cross",
+      "label": "side",
+      "side": true,
+      "visible": 12614,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "cross-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 14220,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0042724609375
+    },
+    {
+      "fixture": "cross-swap",
+      "label": "side",
+      "side": true,
+      "visible": 12614,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "eye-ring",
+      "label": "initial",
+      "side": false,
+      "visible": 23104,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.00384521484375
+    },
+    {
+      "fixture": "eye-ring",
+      "label": "side",
+      "side": true,
+      "visible": 20476,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "eye-ring-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 23104,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0084991455078125
+    },
+    {
+      "fixture": "eye-ring-swap",
+      "label": "side",
+      "side": true,
+      "visible": 20476,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "two-eyes",
+      "label": "initial",
+      "side": false,
+      "visible": 16812,
+      "silhouetteFraction": 0.0001220703125,
+      "changedFraction": 0.00006103515625,
+      "meanMaxChannelDifference": 0.0044097900390625
+    },
+    {
+      "fixture": "two-eyes",
+      "label": "side",
+      "side": true,
+      "visible": 14892,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "two-eyes-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 16812,
+      "silhouetteFraction": 0.0001220703125,
+      "changedFraction": 0.0001220703125,
+      "meanMaxChannelDifference": 0.02593994140625
+    },
+    {
+      "fixture": "two-eyes-swap",
+      "label": "side",
+      "side": true,
+      "visible": 14892,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "diagonal",
+      "label": "initial",
+      "side": false,
+      "visible": 5564,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0004425048828125
+    },
+    {
+      "fixture": "diagonal",
+      "label": "side",
+      "side": true,
+      "visible": 4957,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "diagonal-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 5564,
+      "silhouetteFraction": 0,
+      "changedFraction": 0.000030517578125,
+      "meanMaxChannelDifference": 0.001068115234375
+    },
+    {
+      "fixture": "diagonal-swap",
+      "label": "side",
+      "side": true,
+      "visible": 4957,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "diagonal-threat",
+      "label": "initial",
+      "side": false,
+      "visible": 8204,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.00054931640625
+    },
+    {
+      "fixture": "diagonal-threat",
+      "label": "side",
+      "side": true,
+      "visible": 7305,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "diagonal-threat-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 8204,
+      "silhouetteFraction": 0,
+      "changedFraction": 0.0000457763671875,
+      "meanMaxChannelDifference": 0.0017547607421875
+    },
+    {
+      "fixture": "diagonal-threat-swap",
+      "label": "side",
+      "side": true,
+      "visible": 7305,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "diagonal-cut",
+      "label": "initial",
+      "side": false,
+      "visible": 10672,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.00006103515625
+    },
+    {
+      "fixture": "diagonal-cut",
+      "label": "side",
+      "side": true,
+      "visible": 9524,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "diagonal-cut-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 10672,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.00006103515625
+    },
+    {
+      "fixture": "diagonal-cut-swap",
+      "label": "side",
+      "side": true,
+      "visible": 9524,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "small-jump",
+      "label": "initial",
+      "side": false,
+      "visible": 5736,
+      "silhouetteFraction": 0.00006103515625,
+      "changedFraction": 0.0000152587890625,
+      "meanMaxChannelDifference": 0.0014190673828125
+    },
+    {
+      "fixture": "small-jump",
+      "label": "side",
+      "side": true,
+      "visible": 5104,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "small-jump-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 5736,
+      "silhouetteFraction": 0.00006103515625,
+      "changedFraction": 0.0000762939453125,
+      "meanMaxChannelDifference": 0.0100860595703125
+    },
+    {
+      "fixture": "small-jump-swap",
+      "label": "side",
+      "side": true,
+      "visible": 5104,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "large-jump",
+      "label": "initial",
+      "side": false,
+      "visible": 3760,
+      "silhouetteFraction": 0,
+      "changedFraction": 0.00006103515625,
+      "meanMaxChannelDifference": 0.0015411376953125
+    },
+    {
+      "fixture": "large-jump",
+      "label": "side",
+      "side": true,
+      "visible": 3378,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "large-jump-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 3760,
+      "silhouetteFraction": 0,
+      "changedFraction": 0.000091552734375,
+      "meanMaxChannelDifference": 0.0027618408203125
+    },
+    {
+      "fixture": "large-jump-swap",
+      "label": "side",
+      "side": true,
+      "visible": 3378,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "jump-cut",
+      "label": "initial",
+      "side": false,
+      "visible": 3760,
+      "silhouetteFraction": 0,
+      "changedFraction": 0.00006103515625,
+      "meanMaxChannelDifference": 0.0015411376953125
+    },
+    {
+      "fixture": "jump-cut",
+      "label": "side",
+      "side": true,
+      "visible": 3378,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "jump-cut",
+      "label": "move-1-0.02",
+      "side": false,
+      "visible": 3760,
+      "silhouetteFraction": 0.00006103515625,
+      "changedFraction": 0.0000457763671875,
+      "meanMaxChannelDifference": 0.00189208984375
+    },
+    {
+      "fixture": "jump-cut",
+      "label": "move-1-0.18",
+      "side": false,
+      "visible": 3764,
+      "silhouetteFraction": 0.000091552734375,
+      "changedFraction": 0.000091552734375,
+      "meanMaxChannelDifference": 0.0032196044921875
+    },
+    {
+      "fixture": "jump-cut",
+      "label": "move-1-0.35",
+      "side": false,
+      "visible": 3982,
+      "silhouetteFraction": 0.000030517578125,
+      "changedFraction": 0.0002288818359375,
+      "meanMaxChannelDifference": 0.0053863525390625
+    },
+    {
+      "fixture": "jump-cut",
+      "label": "move-1-0.7",
+      "side": false,
+      "visible": 5102,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.000030517578125
+    },
+    {
+      "fixture": "jump-cut",
+      "label": "undo-1",
+      "side": false,
+      "visible": 3746,
+      "silhouetteFraction": 0.000030517578125,
+      "changedFraction": 0.0000762939453125,
+      "meanMaxChannelDifference": 0.0022735595703125
+    },
+    {
+      "fixture": "jump-cut",
+      "label": "replay-1",
+      "side": false,
+      "visible": 5102,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.000030517578125
+    },
+    {
+      "fixture": "jump-cut-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 3760,
+      "silhouetteFraction": 0,
+      "changedFraction": 0.000091552734375,
+      "meanMaxChannelDifference": 0.0027618408203125
+    },
+    {
+      "fixture": "jump-cut-swap",
+      "label": "side",
+      "side": true,
+      "visible": 3378,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "jump-cut-swap",
+      "label": "move-1-0.02",
+      "side": false,
+      "visible": 3760,
+      "silhouetteFraction": 0.00006103515625,
+      "changedFraction": 0.0001373291015625,
+      "meanMaxChannelDifference": 0.01092529296875
+    },
+    {
+      "fixture": "jump-cut-swap",
+      "label": "move-1-0.18",
+      "side": false,
+      "visible": 3764,
+      "silhouetteFraction": 0.000091552734375,
+      "changedFraction": 0.000152587890625,
+      "meanMaxChannelDifference": 0.01531982421875
+    },
+    {
+      "fixture": "jump-cut-swap",
+      "label": "move-1-0.35",
+      "side": false,
+      "visible": 3982,
+      "silhouetteFraction": 0.000030517578125,
+      "changedFraction": 0.0003662109375,
+      "meanMaxChannelDifference": 0.013946533203125
+    },
+    {
+      "fixture": "jump-cut-swap",
+      "label": "move-1-0.7",
+      "side": false,
+      "visible": 5102,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0000457763671875
+    },
+    {
+      "fixture": "jump-cut-swap",
+      "label": "undo-1",
+      "side": false,
+      "visible": 3746,
+      "silhouetteFraction": 0.000030517578125,
+      "changedFraction": 0.000091552734375,
+      "meanMaxChannelDifference": 0.00689697265625
+    },
+    {
+      "fixture": "jump-cut-swap",
+      "label": "replay-1",
+      "side": false,
+      "visible": 5102,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0000457763671875
+    },
+    {
+      "fixture": "jump-merge",
+      "label": "initial",
+      "side": false,
+      "visible": 5736,
+      "silhouetteFraction": 0.00006103515625,
+      "changedFraction": 0.0000152587890625,
+      "meanMaxChannelDifference": 0.0014190673828125
+    },
+    {
+      "fixture": "jump-merge",
+      "label": "side",
+      "side": true,
+      "visible": 5104,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "jump-merge",
+      "label": "move-1-0.02",
+      "side": false,
+      "visible": 5784,
+      "silhouetteFraction": 0.00079345703125,
+      "changedFraction": 0.0006256103515625,
+      "meanMaxChannelDifference": 0.02032470703125
+    },
+    {
+      "fixture": "jump-merge",
+      "label": "move-1-0.18",
+      "side": false,
+      "visible": 5768,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.00079345703125
+    },
+    {
+      "fixture": "jump-merge",
+      "label": "move-1-0.35",
+      "side": false,
+      "visible": 6364,
+      "silhouetteFraction": 0.00006103515625,
+      "changedFraction": 0.0000152587890625,
+      "meanMaxChannelDifference": 0.0016021728515625
+    },
+    {
+      "fixture": "jump-merge",
+      "label": "move-1-0.7",
+      "side": false,
+      "visible": 8444,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0007476806640625
+    },
+    {
+      "fixture": "jump-merge",
+      "label": "undo-1",
+      "side": false,
+      "visible": 5732,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0010986328125
+    },
+    {
+      "fixture": "jump-merge",
+      "label": "replay-1",
+      "side": false,
+      "visible": 8444,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0007476806640625
+    },
+    {
+      "fixture": "jump-merge-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 5736,
+      "silhouetteFraction": 0.00006103515625,
+      "changedFraction": 0.0000762939453125,
+      "meanMaxChannelDifference": 0.0100860595703125
+    },
+    {
+      "fixture": "jump-merge-swap",
+      "label": "side",
+      "side": true,
+      "visible": 5104,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "jump-merge-swap",
+      "label": "move-1-0.02",
+      "side": false,
+      "visible": 5784,
+      "silhouetteFraction": 0.00079345703125,
+      "changedFraction": 0.0008087158203125,
+      "meanMaxChannelDifference": 0.147216796875
+    },
+    {
+      "fixture": "jump-merge-swap",
+      "label": "move-1-0.18",
+      "side": false,
+      "visible": 5768,
+      "silhouetteFraction": 0,
+      "changedFraction": 0.000030517578125,
+      "meanMaxChannelDifference": 0.0017852783203125
+    },
+    {
+      "fixture": "jump-merge-swap",
+      "label": "move-1-0.35",
+      "side": false,
+      "visible": 6364,
+      "silhouetteFraction": 0.00006103515625,
+      "changedFraction": 0.0001220703125,
+      "meanMaxChannelDifference": 0.010833740234375
+    },
+    {
+      "fixture": "jump-merge-swap",
+      "label": "move-1-0.7",
+      "side": false,
+      "visible": 8444,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0022735595703125
+    },
+    {
+      "fixture": "jump-merge-swap",
+      "label": "undo-1",
+      "side": false,
+      "visible": 5732,
+      "silhouetteFraction": 0,
+      "changedFraction": 0.0000152587890625,
+      "meanMaxChannelDifference": 0.002471923828125
+    },
+    {
+      "fixture": "jump-merge-swap",
+      "label": "replay-1",
+      "side": false,
+      "visible": 8444,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0022735595703125
+    },
+    {
+      "fixture": "atari",
+      "label": "initial",
+      "side": false,
+      "visible": 7149,
+      "silhouetteFraction": 0.0001068115234375,
+      "changedFraction": 0.0000762939453125,
+      "meanMaxChannelDifference": 0.0075531005859375
+    },
+    {
+      "fixture": "atari",
+      "label": "side",
+      "side": true,
+      "visible": 6378,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "atari",
+      "label": "move-1-0.02",
+      "side": false,
+      "visible": 7156,
+      "silhouetteFraction": 0.0002593994140625,
+      "changedFraction": 0.0002593994140625,
+      "meanMaxChannelDifference": 0.0430145263671875
+    },
+    {
+      "fixture": "atari",
+      "label": "move-1-0.18",
+      "side": false,
+      "visible": 7217,
+      "silhouetteFraction": 0.000274658203125,
+      "changedFraction": 0.000274658203125,
+      "meanMaxChannelDifference": 0.0374908447265625
+    },
+    {
+      "fixture": "atari",
+      "label": "move-1-0.35",
+      "side": false,
+      "visible": 7628,
+      "silhouetteFraction": 0.0000762939453125,
+      "changedFraction": 0.0001220703125,
+      "meanMaxChannelDifference": 0.009521484375
+    },
+    {
+      "fixture": "atari",
+      "label": "move-1-0.7",
+      "side": false,
+      "visible": 8962,
+      "silhouetteFraction": 0.0001068115234375,
+      "changedFraction": 0.0001068115234375,
+      "meanMaxChannelDifference": 0.0169525146484375
+    },
+    {
+      "fixture": "atari",
+      "label": "undo-1",
+      "side": false,
+      "visible": 7211,
+      "silhouetteFraction": 0.0008697509765625,
+      "changedFraction": 0.000946044921875,
+      "meanMaxChannelDifference": 0.1179656982421875
+    },
+    {
+      "fixture": "atari",
+      "label": "replay-1",
+      "side": false,
+      "visible": 8962,
+      "silhouetteFraction": 0.0000762939453125,
+      "changedFraction": 0.0000762939453125,
+      "meanMaxChannelDifference": 0.01324462890625
+    },
+    {
+      "fixture": "atari-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 7149,
+      "silhouetteFraction": 0.0001068115234375,
+      "changedFraction": 0.000091552734375,
+      "meanMaxChannelDifference": 0.0099639892578125
+    },
+    {
+      "fixture": "atari-swap",
+      "label": "side",
+      "side": true,
+      "visible": 6378,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "atari-swap",
+      "label": "move-1-0.02",
+      "side": false,
+      "visible": 7156,
+      "silhouetteFraction": 0.0002593994140625,
+      "changedFraction": 0.0001678466796875,
+      "meanMaxChannelDifference": 0.0048370361328125
+    },
+    {
+      "fixture": "atari-swap",
+      "label": "move-1-0.18",
+      "side": false,
+      "visible": 7217,
+      "silhouetteFraction": 0.000274658203125,
+      "changedFraction": 0.00006103515625,
+      "meanMaxChannelDifference": 0.0029449462890625
+    },
+    {
+      "fixture": "atari-swap",
+      "label": "move-1-0.35",
+      "side": false,
+      "visible": 7628,
+      "silhouetteFraction": 0.0000762939453125,
+      "changedFraction": 0.000213623046875,
+      "meanMaxChannelDifference": 0.0074005126953125
+    },
+    {
+      "fixture": "atari-swap",
+      "label": "move-1-0.7",
+      "side": false,
+      "visible": 8962,
+      "silhouetteFraction": 0.0001068115234375,
+      "changedFraction": 0.00006103515625,
+      "meanMaxChannelDifference": 0.0020904541015625
+    },
+    {
+      "fixture": "atari-swap",
+      "label": "undo-1",
+      "side": false,
+      "visible": 7211,
+      "silhouetteFraction": 0.0008697509765625,
+      "changedFraction": 0.0001373291015625,
+      "meanMaxChannelDifference": 0.0074615478515625
+    },
+    {
+      "fixture": "atari-swap",
+      "label": "replay-1",
+      "side": false,
+      "visible": 8962,
+      "silhouetteFraction": 0.0000762939453125,
+      "changedFraction": 0.00006103515625,
+      "meanMaxChannelDifference": 0.0022735595703125
+    },
+    {
+      "fixture": "capture",
+      "label": "initial",
+      "side": false,
+      "visible": 12579,
+      "silhouetteFraction": 0.0001373291015625,
+      "changedFraction": 0.000152587890625,
+      "meanMaxChannelDifference": 0.022125244140625
+    },
+    {
+      "fixture": "capture",
+      "label": "side",
+      "side": true,
+      "visible": 11207,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "capture",
+      "label": "move-1-0.02",
+      "side": false,
+      "visible": 12588,
+      "silhouetteFraction": 0.0005950927734375,
+      "changedFraction": 0.0006256103515625,
+      "meanMaxChannelDifference": 0.1088409423828125
+    },
+    {
+      "fixture": "capture",
+      "label": "move-1-0.18",
+      "side": false,
+      "visible": 11765,
+      "silhouetteFraction": 0.0004119873046875,
+      "changedFraction": 0.0007171630859375,
+      "meanMaxChannelDifference": 0.0727996826171875
+    },
+    {
+      "fixture": "capture",
+      "label": "move-1-0.35",
+      "side": false,
+      "visible": 10820,
+      "silhouetteFraction": 0.0001068115234375,
+      "changedFraction": 0.0005340576171875,
+      "meanMaxChannelDifference": 0.026214599609375
+    },
+    {
+      "fixture": "capture",
+      "label": "move-1-0.7",
+      "side": false,
+      "visible": 11447,
+      "silhouetteFraction": 0.0001068115234375,
+      "changedFraction": 0.000274658203125,
+      "meanMaxChannelDifference": 0.0227508544921875
+    },
+    {
+      "fixture": "capture",
+      "label": "undo-1",
+      "side": false,
+      "visible": 12209,
+      "silhouetteFraction": 0.0010528564453125,
+      "changedFraction": 0.0012054443359375,
+      "meanMaxChannelDifference": 0.1782684326171875
+    },
+    {
+      "fixture": "capture",
+      "label": "replay-1",
+      "side": false,
+      "visible": 11447,
+      "silhouetteFraction": 0.0000762939453125,
+      "changedFraction": 0.0002288818359375,
+      "meanMaxChannelDifference": 0.0192413330078125
+    },
+    {
+      "fixture": "capture-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 12579,
+      "silhouetteFraction": 0.0001373291015625,
+      "changedFraction": 0.00006103515625,
+      "meanMaxChannelDifference": 0.002899169921875
+    },
+    {
+      "fixture": "capture-swap",
+      "label": "side",
+      "side": true,
+      "visible": 11207,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "capture-swap",
+      "label": "move-1-0.02",
+      "side": false,
+      "visible": 12588,
+      "silhouetteFraction": 0.0005950927734375,
+      "changedFraction": 0.0004730224609375,
+      "meanMaxChannelDifference": 0.013671875
+    },
+    {
+      "fixture": "capture-swap",
+      "label": "move-1-0.18",
+      "side": false,
+      "visible": 11765,
+      "silhouetteFraction": 0.0004119873046875,
+      "changedFraction": 0.0003814697265625,
+      "meanMaxChannelDifference": 0.0078125
+    },
+    {
+      "fixture": "capture-swap",
+      "label": "move-1-0.35",
+      "side": false,
+      "visible": 10820,
+      "silhouetteFraction": 0.0001068115234375,
+      "changedFraction": 0.000457763671875,
+      "meanMaxChannelDifference": 0.0088043212890625
+    },
+    {
+      "fixture": "capture-swap",
+      "label": "move-1-0.7",
+      "side": false,
+      "visible": 11447,
+      "silhouetteFraction": 0.0001068115234375,
+      "changedFraction": 0.0000457763671875,
+      "meanMaxChannelDifference": 0.0040283203125
+    },
+    {
+      "fixture": "capture-swap",
+      "label": "undo-1",
+      "side": false,
+      "visible": 12209,
+      "silhouetteFraction": 0.0010528564453125,
+      "changedFraction": 0.0009918212890625,
+      "meanMaxChannelDifference": 0.0159454345703125
+    },
+    {
+      "fixture": "capture-swap",
+      "label": "replay-1",
+      "side": false,
+      "visible": 11447,
+      "silhouetteFraction": 0.0000762939453125,
+      "changedFraction": 0.0000762939453125,
+      "meanMaxChannelDifference": 0.0041046142578125
+    },
+    {
+      "fixture": "captured-thread",
+      "label": "initial",
+      "side": false,
+      "visible": 8966,
+      "silhouetteFraction": 0.000091552734375,
+      "changedFraction": 0.000091552734375,
+      "meanMaxChannelDifference": 0.0146636962890625
+    },
+    {
+      "fixture": "captured-thread",
+      "label": "side",
+      "side": true,
+      "visible": 8002,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "captured-thread",
+      "label": "move-1-0.02",
+      "side": false,
+      "visible": 8977,
+      "silhouetteFraction": 0.000396728515625,
+      "changedFraction": 0.000396728515625,
+      "meanMaxChannelDifference": 0.0686492919921875
+    },
+    {
+      "fixture": "captured-thread",
+      "label": "move-1-0.18",
+      "side": false,
+      "visible": 8520,
+      "silhouetteFraction": 0.0006256103515625,
+      "changedFraction": 0.0007171630859375,
+      "meanMaxChannelDifference": 0.0887298583984375
+    },
+    {
+      "fixture": "captured-thread",
+      "label": "move-1-0.35",
+      "side": false,
+      "visible": 8125,
+      "silhouetteFraction": 0.0001220703125,
+      "changedFraction": 0.0006103515625,
+      "meanMaxChannelDifference": 0.0190582275390625
+    },
+    {
+      "fixture": "captured-thread",
+      "label": "move-1-0.7",
+      "side": false,
+      "visible": 9066,
+      "silhouetteFraction": 0.000091552734375,
+      "changedFraction": 0.0001220703125,
+      "meanMaxChannelDifference": 0.0155029296875
+    },
+    {
+      "fixture": "captured-thread",
+      "label": "undo-1",
+      "side": false,
+      "visible": 8825,
+      "silhouetteFraction": 0.001678466796875,
+      "changedFraction": 0.001800537109375,
+      "meanMaxChannelDifference": 0.265380859375
+    },
+    {
+      "fixture": "captured-thread",
+      "label": "replay-1",
+      "side": false,
+      "visible": 9069,
+      "silhouetteFraction": 0.0001068115234375,
+      "changedFraction": 0.0001678466796875,
+      "meanMaxChannelDifference": 0.018218994140625
+    },
+    {
+      "fixture": "captured-thread-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 8966,
+      "silhouetteFraction": 0.000091552734375,
+      "changedFraction": 0.00006103515625,
+      "meanMaxChannelDifference": 0.00201416015625
+    },
+    {
+      "fixture": "captured-thread-swap",
+      "label": "side",
+      "side": true,
+      "visible": 8002,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "captured-thread-swap",
+      "label": "move-1-0.02",
+      "side": false,
+      "visible": 8977,
+      "silhouetteFraction": 0.000396728515625,
+      "changedFraction": 0.0003204345703125,
+      "meanMaxChannelDifference": 0.00762939453125
+    },
+    {
+      "fixture": "captured-thread-swap",
+      "label": "move-1-0.18",
+      "side": false,
+      "visible": 8520,
+      "silhouetteFraction": 0.0006256103515625,
+      "changedFraction": 0.00054931640625,
+      "meanMaxChannelDifference": 0.0233001708984375
+    },
+    {
+      "fixture": "captured-thread-swap",
+      "label": "move-1-0.35",
+      "side": false,
+      "visible": 8125,
+      "silhouetteFraction": 0.0001220703125,
+      "changedFraction": 0.0006561279296875,
+      "meanMaxChannelDifference": 0.0250701904296875
+    },
+    {
+      "fixture": "captured-thread-swap",
+      "label": "move-1-0.7",
+      "side": false,
+      "visible": 9066,
+      "silhouetteFraction": 0.000091552734375,
+      "changedFraction": 0.000030517578125,
+      "meanMaxChannelDifference": 0.0018310546875
+    },
+    {
+      "fixture": "captured-thread-swap",
+      "label": "undo-1",
+      "side": false,
+      "visible": 8825,
+      "silhouetteFraction": 0.001678466796875,
+      "changedFraction": 0.00091552734375,
+      "meanMaxChannelDifference": 0.0208740234375
+    },
+    {
+      "fixture": "captured-thread-swap",
+      "label": "replay-1",
+      "side": false,
+      "visible": 9069,
+      "silhouetteFraction": 0.0001068115234375,
+      "changedFraction": 0.000030517578125,
+      "meanMaxChannelDifference": 0.00201416015625
+    },
+    {
+      "fixture": "ko",
+      "label": "initial",
+      "side": false,
+      "visible": 12839,
+      "silhouetteFraction": 0.0001068115234375,
+      "changedFraction": 0.0001220703125,
+      "meanMaxChannelDifference": 0.0142669677734375
+    },
+    {
+      "fixture": "ko",
+      "label": "side",
+      "side": true,
+      "visible": 11447,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "ko",
+      "label": "move-1-0.02",
+      "side": false,
+      "visible": 12863,
+      "silhouetteFraction": 0.0005645751953125,
+      "changedFraction": 0.0004730224609375,
+      "meanMaxChannelDifference": 0.01995849609375
+    },
+    {
+      "fixture": "ko",
+      "label": "move-1-0.18",
+      "side": false,
+      "visible": 12436,
+      "silhouetteFraction": 0.0012664794921875,
+      "changedFraction": 0.001129150390625,
+      "meanMaxChannelDifference": 0.0464324951171875
+    },
+    {
+      "fixture": "ko",
+      "label": "move-1-0.35",
+      "side": false,
+      "visible": 11934,
+      "silhouetteFraction": 0.0003814697265625,
+      "changedFraction": 0.0012664794921875,
+      "meanMaxChannelDifference": 0.0610504150390625
+    },
+    {
+      "fixture": "ko",
+      "label": "move-1-0.7",
+      "side": false,
+      "visible": 12834,
+      "silhouetteFraction": 0.0001678466796875,
+      "changedFraction": 0.0001068115234375,
+      "meanMaxChannelDifference": 0.018157958984375
+    },
+    {
+      "fixture": "ko",
+      "label": "undo-1",
+      "side": false,
+      "visible": 12795,
+      "silhouetteFraction": 0.003173828125,
+      "changedFraction": 0.002227783203125,
+      "meanMaxChannelDifference": 0.0449371337890625
+    },
+    {
+      "fixture": "ko",
+      "label": "replay-1",
+      "side": false,
+      "visible": 12831,
+      "silhouetteFraction": 0.00018310546875,
+      "changedFraction": 0.000091552734375,
+      "meanMaxChannelDifference": 0.0166168212890625
+    },
+    {
+      "fixture": "ko-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 12839,
+      "silhouetteFraction": 0.0001068115234375,
+      "changedFraction": 0.0001220703125,
+      "meanMaxChannelDifference": 0.010589599609375
+    },
+    {
+      "fixture": "ko-swap",
+      "label": "side",
+      "side": true,
+      "visible": 11447,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "ko-swap",
+      "label": "move-1-0.02",
+      "side": false,
+      "visible": 12863,
+      "silhouetteFraction": 0.0005645751953125,
+      "changedFraction": 0.0005645751953125,
+      "meanMaxChannelDifference": 0.0917205810546875
+    },
+    {
+      "fixture": "ko-swap",
+      "label": "move-1-0.18",
+      "side": false,
+      "visible": 12436,
+      "silhouetteFraction": 0.0012664794921875,
+      "changedFraction": 0.0013580322265625,
+      "meanMaxChannelDifference": 0.1806793212890625
+    },
+    {
+      "fixture": "ko-swap",
+      "label": "move-1-0.35",
+      "side": false,
+      "visible": 11934,
+      "silhouetteFraction": 0.0003814697265625,
+      "changedFraction": 0.001220703125,
+      "meanMaxChannelDifference": 0.0487213134765625
+    },
+    {
+      "fixture": "ko-swap",
+      "label": "move-1-0.7",
+      "side": false,
+      "visible": 12834,
+      "silhouetteFraction": 0.0001678466796875,
+      "changedFraction": 0.000152587890625,
+      "meanMaxChannelDifference": 0.0117034912109375
+    },
+    {
+      "fixture": "ko-swap",
+      "label": "undo-1",
+      "side": false,
+      "visible": 12795,
+      "silhouetteFraction": 0.003173828125,
+      "changedFraction": 0.0033111572265625,
+      "meanMaxChannelDifference": 0.49835205078125
+    },
+    {
+      "fixture": "ko-swap",
+      "label": "replay-1",
+      "side": false,
+      "visible": 12831,
+      "silhouetteFraction": 0.00018310546875,
+      "changedFraction": 0.0001983642578125,
+      "meanMaxChannelDifference": 0.0156707763671875
+    },
+    {
+      "fixture": "suicide",
+      "label": "initial",
+      "side": false,
+      "visible": 11584,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0010986328125
+    },
+    {
+      "fixture": "suicide",
+      "label": "side",
+      "side": true,
+      "visible": 10288,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "suicide-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 11584,
+      "silhouetteFraction": 0,
+      "changedFraction": 0.00006103515625,
+      "meanMaxChannelDifference": 0.0033721923828125
+    },
+    {
+      "fixture": "suicide-swap",
+      "label": "side",
+      "side": true,
+      "visible": 10288,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "opponents",
+      "label": "initial",
+      "side": false,
+      "visible": 5336,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.000030517578125
+    },
+    {
+      "fixture": "opponents",
+      "label": "side",
+      "side": true,
+      "visible": 4752,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "opponents-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 5336,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0000152587890625
+    },
+    {
+      "fixture": "opponents-swap",
+      "label": "side",
+      "side": true,
+      "visible": 4752,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "three-around",
+      "label": "initial",
+      "side": false,
+      "visible": 8460,
+      "silhouetteFraction": 0,
+      "changedFraction": 0.000030517578125,
+      "meanMaxChannelDifference": 0.001708984375
+    },
+    {
+      "fixture": "three-around",
+      "label": "side",
+      "side": true,
+      "visible": 7524,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "three-around-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 8460,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0005645751953125
+    },
+    {
+      "fixture": "three-around-swap",
+      "label": "side",
+      "side": true,
+      "visible": 7524,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "four-around",
+      "label": "initial",
+      "side": false,
+      "visible": 11584,
+      "silhouetteFraction": 0,
+      "changedFraction": 0.00006103515625,
+      "meanMaxChannelDifference": 0.0033721923828125
+    },
+    {
+      "fixture": "four-around",
+      "label": "side",
+      "side": true,
+      "visible": 10288,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "four-around-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 11584,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0010986328125
+    },
+    {
+      "fixture": "four-around-swap",
+      "label": "side",
+      "side": true,
+      "visible": 10288,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "edge-jump",
+      "label": "initial",
+      "side": false,
+      "visible": 5656,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0006866455078125
+    },
+    {
+      "fixture": "edge-jump",
+      "label": "side",
+      "side": true,
+      "visible": 5060,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "edge-jump-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 5656,
+      "silhouetteFraction": 0,
+      "changedFraction": 0.00006103515625,
+      "meanMaxChannelDifference": 0.00164794921875
+    },
+    {
+      "fixture": "edge-jump-swap",
+      "label": "side",
+      "side": true,
+      "visible": 5060,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "user-nine",
+      "label": "initial",
+      "side": false,
+      "visible": 13778,
+      "silhouetteFraction": 0,
+      "changedFraction": 0.000030517578125,
+      "meanMaxChannelDifference": 0.0027618408203125
+    },
+    {
+      "fixture": "user-nine",
+      "label": "side",
+      "side": true,
+      "visible": 12179,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "user-nine-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 13778,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0025634765625
+    },
+    {
+      "fixture": "user-nine-swap",
+      "label": "side",
+      "side": true,
+      "visible": 12179,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "route-reveal",
+      "label": "initial",
+      "side": false,
+      "visible": 8460,
+      "silhouetteFraction": 0,
+      "changedFraction": 0.000030517578125,
+      "meanMaxChannelDifference": 0.001708984375
+    },
+    {
+      "fixture": "route-reveal",
+      "label": "side",
+      "side": true,
+      "visible": 7524,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "route-reveal",
+      "label": "move-1-0.02",
+      "side": false,
+      "visible": 8456,
+      "silhouetteFraction": 0.00006103515625,
+      "changedFraction": 0.00006103515625,
+      "meanMaxChannelDifference": 0.0107269287109375
+    },
+    {
+      "fixture": "route-reveal",
+      "label": "move-1-0.18",
+      "side": false,
+      "visible": 8608,
+      "silhouetteFraction": 0.00030517578125,
+      "changedFraction": 0.0005950927734375,
+      "meanMaxChannelDifference": 0.055999755859375
+    },
+    {
+      "fixture": "route-reveal",
+      "label": "move-1-0.35",
+      "side": false,
+      "visible": 9336,
+      "silhouetteFraction": 0.0001220703125,
+      "changedFraction": 0.0002899169921875,
+      "meanMaxChannelDifference": 0.0254974365234375
+    },
+    {
+      "fixture": "route-reveal",
+      "label": "move-1-0.7",
+      "side": false,
+      "visible": 11428,
+      "silhouetteFraction": 0.00006103515625,
+      "changedFraction": 0.0001373291015625,
+      "meanMaxChannelDifference": 0.0129241943359375
+    },
+    {
+      "fixture": "route-reveal",
+      "label": "undo-1",
+      "side": false,
+      "visible": 8496,
+      "silhouetteFraction": 0.00006103515625,
+      "changedFraction": 0.0002288818359375,
+      "meanMaxChannelDifference": 0.01715087890625
+    },
+    {
+      "fixture": "route-reveal",
+      "label": "replay-1",
+      "side": false,
+      "visible": 11428,
+      "silhouetteFraction": 0,
+      "changedFraction": 0.000091552734375,
+      "meanMaxChannelDifference": 0.00390625
+    },
+    {
+      "fixture": "route-reveal-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 8460,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0005645751953125
+    },
+    {
+      "fixture": "route-reveal-swap",
+      "label": "side",
+      "side": true,
+      "visible": 7524,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "route-reveal-swap",
+      "label": "move-1-0.02",
+      "side": false,
+      "visible": 8456,
+      "silhouetteFraction": 0.00006103515625,
+      "changedFraction": 0.000030517578125,
+      "meanMaxChannelDifference": 0.0015106201171875
+    },
+    {
+      "fixture": "route-reveal-swap",
+      "label": "move-1-0.18",
+      "side": false,
+      "visible": 8608,
+      "silhouetteFraction": 0.00030517578125,
+      "changedFraction": 0.000244140625,
+      "meanMaxChannelDifference": 0.006317138671875
+    },
+    {
+      "fixture": "route-reveal-swap",
+      "label": "move-1-0.35",
+      "side": false,
+      "visible": 9336,
+      "silhouetteFraction": 0.0001220703125,
+      "changedFraction": 0.000152587890625,
+      "meanMaxChannelDifference": 0.005645751953125
+    },
+    {
+      "fixture": "route-reveal-swap",
+      "label": "move-1-0.7",
+      "side": false,
+      "visible": 11428,
+      "silhouetteFraction": 0.00006103515625,
+      "changedFraction": 0.000030517578125,
+      "meanMaxChannelDifference": 0.0023040771484375
+    },
+    {
+      "fixture": "route-reveal-swap",
+      "label": "undo-1",
+      "side": false,
+      "visible": 8496,
+      "silhouetteFraction": 0.00006103515625,
+      "changedFraction": 0.0001068115234375,
+      "meanMaxChannelDifference": 0.003204345703125
+    },
+    {
+      "fixture": "route-reveal-swap",
+      "label": "replay-1",
+      "side": false,
+      "visible": 11428,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0016021728515625
+    },
+    {
+      "fixture": "crowded-hub",
+      "label": "initial",
+      "side": false,
+      "visible": 14800,
+      "silhouetteFraction": 0.00018310546875,
+      "changedFraction": 0.00030517578125,
+      "meanMaxChannelDifference": 0.0327606201171875
+    },
+    {
+      "fixture": "crowded-hub",
+      "label": "side",
+      "side": true,
+      "visible": 13187,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "crowded-hub-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 14800,
+      "silhouetteFraction": 0.00018310546875,
+      "changedFraction": 0.000091552734375,
+      "meanMaxChannelDifference": 0.0043182373046875
+    },
+    {
+      "fixture": "crowded-hub-swap",
+      "label": "side",
+      "side": true,
+      "visible": 13187,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "opposed-crossing",
+      "label": "initial",
+      "side": false,
+      "visible": 10672,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0000457763671875
+    },
+    {
+      "fixture": "opposed-crossing",
+      "label": "side",
+      "side": true,
+      "visible": 9512,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "opposed-crossing-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 10672,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.00006103515625
+    },
+    {
+      "fixture": "opposed-crossing-swap",
+      "label": "side",
+      "side": true,
+      "visible": 9512,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "knight",
+      "label": "initial",
+      "side": false,
+      "visible": 5336,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.000030517578125
+    },
+    {
+      "fixture": "knight",
+      "label": "side",
+      "side": true,
+      "visible": 4762,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "knight-intrusion",
+      "label": "initial",
+      "side": false,
+      "visible": 8004,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0000457763671875
+    },
+    {
+      "fixture": "knight-intrusion",
+      "label": "side",
+      "side": true,
+      "visible": 7142,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "knight-local-block",
+      "label": "initial",
+      "side": false,
+      "visible": 8004,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0000457763671875
+    },
+    {
+      "fixture": "knight-local-block",
+      "label": "side",
+      "side": true,
+      "visible": 7142,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "knight-local-block",
+      "label": "move-1-0.02",
+      "side": false,
+      "visible": 8048,
+      "silhouetteFraction": 0.00067138671875,
+      "changedFraction": 0.00067138671875,
+      "meanMaxChannelDifference": 0.1354217529296875
+    },
+    {
+      "fixture": "knight-local-block",
+      "label": "move-1-0.18",
+      "side": false,
+      "visible": 8104,
+      "silhouetteFraction": 0,
+      "changedFraction": 0.00006103515625,
+      "meanMaxChannelDifference": 0.0023040771484375
+    },
+    {
+      "fixture": "knight-local-block",
+      "label": "move-1-0.35",
+      "side": false,
+      "visible": 8838,
+      "silhouetteFraction": 0.00006103515625,
+      "changedFraction": 0.0000762939453125,
+      "meanMaxChannelDifference": 0.0089111328125
+    },
+    {
+      "fixture": "knight-local-block",
+      "label": "move-1-0.7",
+      "side": false,
+      "visible": 10892,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0010528564453125
+    },
+    {
+      "fixture": "knight-local-block",
+      "label": "undo-1",
+      "side": false,
+      "visible": 8028,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.000152587890625
+    },
+    {
+      "fixture": "knight-local-block",
+      "label": "replay-1",
+      "side": false,
+      "visible": 10892,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0010528564453125
+    },
+    {
+      "fixture": "knight-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 5336,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.000030517578125
+    },
+    {
+      "fixture": "knight-swap",
+      "label": "side",
+      "side": true,
+      "visible": 4762,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "knight-intrusion-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 8004,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0000457763671875
+    },
+    {
+      "fixture": "knight-intrusion-swap",
+      "label": "side",
+      "side": true,
+      "visible": 7142,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "knight-local-block-swap",
+      "label": "initial",
+      "side": false,
+      "visible": 8004,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.0000457763671875
+    },
+    {
+      "fixture": "knight-local-block-swap",
+      "label": "side",
+      "side": true,
+      "visible": 7142,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0
+    },
+    {
+      "fixture": "knight-local-block-swap",
+      "label": "move-1-0.02",
+      "side": false,
+      "visible": 8048,
+      "silhouetteFraction": 0.00067138671875,
+      "changedFraction": 0.000579833984375,
+      "meanMaxChannelDifference": 0.019256591796875
+    },
+    {
+      "fixture": "knight-local-block-swap",
+      "label": "move-1-0.18",
+      "side": false,
+      "visible": 8104,
+      "silhouetteFraction": 0,
+      "changedFraction": 0.00006103515625,
+      "meanMaxChannelDifference": 0.0008544921875
+    },
+    {
+      "fixture": "knight-local-block-swap",
+      "label": "move-1-0.35",
+      "side": false,
+      "visible": 8838,
+      "silhouetteFraction": 0.00006103515625,
+      "changedFraction": 0.000030517578125,
+      "meanMaxChannelDifference": 0.0009613037109375
+    },
+    {
+      "fixture": "knight-local-block-swap",
+      "label": "move-1-0.7",
+      "side": false,
+      "visible": 10892,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.000640869140625
+    },
+    {
+      "fixture": "knight-local-block-swap",
+      "label": "undo-1",
+      "side": false,
+      "visible": 8028,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.000091552734375
+    },
+    {
+      "fixture": "knight-local-block-swap",
+      "label": "replay-1",
+      "side": false,
+      "visible": 10892,
+      "silhouetteFraction": 0,
+      "changedFraction": 0,
+      "meanMaxChannelDifference": 0.000640869140625
+    }
+  ]
+}

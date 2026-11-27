@@ -1,3 +1,88 @@
+# 当前验收：正俯视曲面直接求交与清晰度
+
+日期：2026-11-27，仅本地。本轮保留 Three.js，不迁移游戏引擎；以下记录覆盖历史验收中的生产算法描述。
+
+## 实现与清晰度
+
+- 正俯视射线直接求解棋子和气脉椭圆截面的最高交点，省去连接最多 64 次的逐步搜索。截面、根部、生命值、切断/交叉包络、呼吸以及完整场法线/颜色/遮蔽不变；黑白分离、并集不叠加体积。斜视与非竖直阴影继续走原算法。
+- 旧求交着色器保留在 `src/prototype/reference-implicit-stones.ts`，只用于开发对照。对比页默认左右均为 Three.js，分别绘制优化前/后；原 Babylon.js 选项通过 `?mode=engines` 保留。不能再把默认右侧当成 Babylon.js。
+- 对比页取消默认固定 640 像素，自动匹配显示宽度和设备像素密度，仍限制为 150 万像素、1.5 DPR。本轮 Retina 视口中每侧显示宽 649 CSS px，实际帧缓冲为 973×973；原固定档为 640×640。固定档仍可用于同分辨率性能测量。
+- 正式游戏和对比页棋线按当前分辨率解析绘制，用 `fwidth` 计算亚像素覆盖，避免栅格细线经纹理缩放和 mipmap 后发虚；正式棋盘线宽由 0.7 调为 0.9 场景单位，透明度由 0.68 调为 0.72。文字、星位和木纹仍使用纹理，未采用后期锐化或模糊滤镜。生产像素预算未提高，因此大尺寸 Retina 画布仍可能低于原生 2 DPR。
+
+## 本机硬件性能
+
+独立 Chromium 159、ANGLE Metal / Apple M2 Pro；赵治勋棋谱第 150 手，640×640、相同棋盘/相机/色调映射/抗锯齿。每侧预热 8 次、测量 40 次，AB/BA 交替串行，无并行 GPU 验收。
+
+| 负载 | 优化前中位数 / P95 | 优化后中位数 / P95 | 中位数降幅 |
+| --- | --- | --- | --- |
+| 稳定局面强制绘制 | 21.3 / 31.4 ms | 9.2 / 13.3 ms | 56.8% |
+| 呼吸 | 19.5 / 25.8 ms | 8.1 / 12.5 ms | 58.5% |
+
+此为渲染提交到 `gl.finish()` 加单像素同步回读返回的墙钟耗时，包含回读/进程同步，不是纯 GPU 时间或游戏 FPS。两侧不含正式棋桌、投射阴影、势场、交互提示，也不计棋局分析、上传或首次编译。不能外推完整游戏、其他设备或功耗；普通预览静止后停绘。原始样本：[稳定局面](artifacts/surface-optimized-benchmark-metal.json)、[呼吸](artifacts/surface-optimized-benchmark-breathing-metal.json)。
+
+## 形态与视觉验证
+
+- 64 份人工 SGF、224 个初始/过渡/快速反转/斜视帧，在 256×256 局部视图中逐帧对照冻结旧算法。最大轮廓差异占画面 0.3174%，RGB 差异大于 5/255 的像素最高占 0.3312%；所有斜视对照该颜色差异比例为 0。测试门限分别为 0.4% / 0.5%，不是要求新解析交点复制旧步进容差造成的所有边缘像素。
+- 最差差异位于打劫快速撤销。实际查看 [旧帧](artifacts/surface-worst-ko-swap-before.png) / [新帧](artifacts/surface-worst-ko-swap-after.png) 与提子连接对照，变化集中在退场材料外围细线；主体圆顶、融合根部、正常实虚连接保持。新解在数学测试中落于原距离场零面，不能声称全部像素与旧求交完全一致。
+- 真实第 150 手、973×973 自动清晰度对照：全盘超过 5/255 的差异像素占 0.0161%，近景占 0.0267%；快速反转后局面恢复、结果与稳定帧一致。详见 [对照结果](artifacts/surface-optimized-validation-metal.json) 与 [完整案例数据](artifacts/surface-accuracy.json)。
+- 查看 [24 例总览](artifacts/surface-final-atlas.png)、[根部](artifacts/surface-final-roots.png)、[斜视厚度](artifacts/surface-final-side.png)、[真实棋谱快速反转](artifacts/surface-final-transition.png)、[正式游戏 Retina 棋局](artifacts/surface-final-original.png)。总览棋子 84/84 可见；快速反转全盘/局部残差 0 px。正式页面细线与格点可辨，棋身和气脉融合形态保持；有限分辨率下极细虚连和曲面轮廓仍可能出现亚像素锯齿，不宣称画质已无改进空间。
+- 可选引擎对照仍通过，当前算法在 Three.js / Babylon.js 全盘及近景像素一致；报告另存为 `engines-optimized-*`，不覆盖旧实验。
+
+## 检查结果
+
+- `npm run check`：类型检查、212 项单元测试、生产构建全部通过。主脚本 619.13 kB / gzip 162.02 kB，仍有既有的 500 kB 提示；开发参考实现和 Babylon.js 不进入生产包。
+- `YIYIGO_BROWSER_PREVIEW=1 npm run test:browser`：18/18 通过，包含实际落子/提子、文件边界、Worker、快速恢复、停绘、资源生命周期和生产子路径。
+- `YIYIGO_BENCH_GPU=metal npm run test:surface`：优化前后、Retina 像素预算、回放/反转/停绘、两种负载测量、取消与报告失效验证通过。
+- `YIYIGO_BENCH_GPU=metal npm run test:surface:accuracy`：64 例 / 224 帧通过。
+- `YIYIGO_BENCH_GPU=metal npm run test:babylon`：可选引擎对照通过。
+
+---
+
+# 历史验收：Babylon.js 棋盘对照原型
+
+日期：2026-11-27，仅本地。正式游戏实现与入口保留；新增 `/dev/babylon-compare.html` 和 `src/prototype/`，仅开发页引用 Babylon.js 9.38.0。以下数据是本轮实际测量；后续章节是此前验收。
+
+## 比较范围与方法
+
+- 两侧分别通过 Three.js WebGLRenderer 和 Babylon.js Engine 提交真实绘制。Babylon 适配器复用生产曲面的 CPU 缓冲、GLSL、状态机和 Three.js 色调映射代码，尚不是移除 Three.js 依赖的独立实现。
+- 同一赵治勋棋谱第 150 手、19 路棋盘、正俯视相机、640×640 实际像素、DPR 1、4× MSAA、相同棋盘图像和曲面。两侧均开启 `preserveDrawingBuffer`，均不绘制棋桌、投射阴影、势场或落点提示。不能将本页直接与包含上述内容的完整游戏比较耗时。
+- 每侧预热 8 次，测量 40 次，交替 AB/BA 串行执行。CPU 提交耗时单独记录；完成＋回读耗时通过 `gl.finish()` 加 1 像素同步 `readPixels()` 确认命令结果可读，包含进程同步与回读成本，不是纯 GPU 计时或 FPS。采样不包含棋局分析、缓冲上传、首次编译或加载。
+- 早期仅 `gl.finish()` 的读数不足以证明浏览器 GPU 进程已完成，因此未保留该阶段测量报告。最终硬件采样期间没有并行运行其他浏览器验收任务。
+
+## 实际硬件结果
+
+独立 Playwright Chromium 159、ANGLE Metal / Apple M2 Pro（两侧报告确认），640×640：
+
+| 负载 | 引擎 | CPU 提交中位数 | 完成＋回读中位数 | 完成＋回读 P95 |
+| --- | --- | --- | --- | --- |
+| 稳定局面强制绘制 | Three.js | 0.1 ms | 18.1 ms | 25.2 ms |
+| 稳定局面强制绘制 | Babylon.js | 0.2 ms | 16.6 ms | 23.8 ms |
+| 呼吸 | Three.js | 0.2 ms | 22.1 ms | 28.7 ms |
+| 呼吸 | Babylon.js | 0.3 ms | 22.3 ms | 29.0 ms |
+
+此为每种负载的一轮配对采样，未做多轮置信区间或温度/功耗测量。稳定负载略快而呼吸近似，不能宣称引擎迁移带来稳定性能提升，也不能外推手机、Safari、WebGPU 或其他画质设置。普通预览在过渡结束后停绘，表中稳定负载是主动强制绘制。
+
+原始样本与上下文：
+- [稳定局面](artifacts/babylon-compare-benchmark-metal.json)
+- [呼吸负载](artifacts/babylon-compare-benchmark-breathing-metal.json)
+- [像素对照与浏览器错误](artifacts/babylon-compare-validation-metal.json)
+
+## 画面与验证
+
+- 硬件浏览器全盘、快速反转终态和最后落点近景两侧最大 RGB 通道差均值为 0，差异大于 5/255 的像素比例为 0。确认黑白棋子确实绘制。像素相同只证明等价移植，不证明更好的视觉设计。
+- 目视检查全盘与根部近景：棋子、实虚连接、颜色、格线位置一致；原型保留现有曲面的轮廓与局限，没有新增材质或光照质量收益。
+- 硬件原型验收通过：棋谱切换、空盘到第一手、快速撤销恢复、静止停绘、两种负载采样、报告字段/样本数量、配置变化使旧结果失效、取消采样不导出半成品、无 JS/着色器错误。
+- `npm run typecheck`、`npm run build` 通过。生产主脚本仍为 615.91 kB / gzip 161.33 kB，未打包 Babylon.js；保留原有 500 kB 提示。
+- `node --import tsx --test tests/*.test.ts`：209/209 通过。`npm run check` 中的 tsx CLI 因沙箱 IPC 限制不能启动，采用上述等价 Node 入口完成所有单元测试。
+- `npm run test:browser`：17 项通过、0 失败、1 项跳过；构建产物子路径用例本轮未设置 `YIYIGO_BROWSER_PREVIEW=1`，不声称完成该项。
+- `YIYIGO_BENCH_GPU=metal npm run test:babylon`：通过。默认 `npm run test:babylon` 使用软件 GPU 验证；真实硬件测量需显式启用 Metal 或在自己的浏览器打开本地页面。
+
+截图：[全盘](artifacts/babylon-compare-full-metal.png)、[根部近景](artifacts/babylon-compare-detail-metal.png)、[测量界面](artifacts/babylon-compare-measured-metal.png)。
+
+另外复查并截图保留现有页面：[24 例总览](artifacts/babylon-baseline-atlas.png)、[根部](artifacts/babylon-baseline-roots.png)、[真实棋谱快速反转](artifacts/babylon-baseline-transition.png)、[正式游戏](artifacts/babylon-baseline-original.png)。总览可见 84/84 棋子，真实棋谱页面报告局面复原、全盘与局部残差 0 px，正式入口仍显示完整棋桌与原有操作界面。
+
+---
+
 # 当前验收：棋谱完整性与按需渲染
 
 日期：2026-11-23，仅本地。本文首节描述本轮实现和实际验证；后续章节为历史记录。
